@@ -1,7 +1,5 @@
 package kraan;
 
-
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.json.simple.JSONArray;
@@ -96,7 +94,8 @@ public class Problem {
         return pickupPlaceDuration;
     }
 
-    public void writeJsonFile(File file) throws IOException {
+    @SuppressWarnings("unchecked")
+	public void writeJsonFile(File file) throws IOException {
         JSONObject root = new JSONObject();
 
         JSONObject parameters = new JSONObject();
@@ -182,8 +181,6 @@ public class Problem {
     }
 
     public static Problem fromJson(File file) throws IOException, ParseException {
-
-
         JSONParser parser = new JSONParser();
 
         try(FileReader reader = new FileReader(file)) {

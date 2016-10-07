@@ -1,6 +1,5 @@
 package kraan;
 
-import java.util.*;
 
 /**
  * Created by Wim on 12/05/2015.
