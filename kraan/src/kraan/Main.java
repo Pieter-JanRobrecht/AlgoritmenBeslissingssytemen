@@ -10,7 +10,7 @@ public class Main {
 		// TODO Auto-generated method stub
 		 
         try {
-        	File file = new File(ClassLoader.getSystemResource("/kraan/data/1_50_50_10_FALSE_60_25_100.json").getFile());
+        	File file = new File("./data/1_50_50_10_FALSE_60_25_100.json");
 
         	
         	Problem uwProbleem = Problem.fromJson(file);
