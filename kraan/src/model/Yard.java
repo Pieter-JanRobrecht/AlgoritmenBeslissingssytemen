@@ -183,30 +183,32 @@ public class Yard {
 
 			if (Math.floor(s.getXMin() / 10) != s.getXMin() / 10) { // staggered
 				
-				
-				if (yard[yCoords*length + xCoords][s.getZ() + 1] == null) {
-					if (s.getXMax()/10 == length || yard[(width*length-1) + (yCoords*(length-1)+xCoords)][s.getZ() + 1] == null) {
-						vrij = true;
-					} else {
-						vrij = false;
-						if(maakVrij(yard[(width*length-1) + (yCoords*(length-1)+(xCoords+1))][s.getZ() + 1])) {
-							moveItem(yard[(width*length-1) + (yCoords*(length-1)+(xCoords+1))][s.getZ() + 1]);
-							vrij = true;
-						}
-					}
-					if (s.getXMax()/10 == 0 || yard[width * length + yCoords * (length - 1) + xCoords][s.getZ() + 1] == null) {
-						vrij = true;
-					} else {
-						vrij = false;
-						if(maakVrij(yard[(width*length-1) + (yCoords*(length-1)+(xCoords))][s.getZ() + 1])) {
-							moveItem(yard[(width*length-1) + (yCoords*(length-1)+(xCoords))][s.getZ() + 1]);
-							vrij = true;
-						}
-					}
+				if (yard[(xCoords-1)+(yCoords*length)][s.getZ() + 1] == null) {
+					vrij = true;
 				} else {
 					vrij = false;
-					if(maakVrij(yard[yCoords*length + xCoords][s.getZ() + 1])) {
-						moveItem(yard[yCoords*length + xCoords][s.getZ() + 1]);
+					if(maakVrij(yard[(xCoords-1)+(yCoords*length)][s.getZ() + 1])) {
+						moveItem(yard[(xCoords-1)+(yCoords*length)][s.getZ() + 1]);
+						vrij = true;
+					}
+				}
+				
+				if (yard[(xCoords-1)+(yCoords*length)+1][s.getZ() + 1] == null) {
+					vrij = true;
+				} else {
+					vrij = false;
+					if(maakVrij(yard[(xCoords-1)+(yCoords*length)+1][s.getZ() + 1])) {
+						moveItem(yard[(xCoords-1)+(yCoords*length)+1][s.getZ() + 1]);
+						vrij = true;
+					}
+				}
+				
+				if (yard[][s.getZ() + 1] == null) {
+					
+				} else {
+					vrij = false;
+					if(maakVrij(yard[][s.getZ() + 1])) {
+						moveItem(yard[][s.getZ() + 1]);
 						vrij = true;
 					}
 				}
@@ -214,7 +216,7 @@ public class Yard {
 				
 			} else { // not staggered
 				if (yard[yCoords*length + xCoords][s.getZ() + 1] == null) {
-					if (s.getXMax()/10 == length || yard[(width*length-1) + (yCoords*(length-1)+xCoords)][s.getZ() + 1] == null) {
+					if (s.getXMax()/10 == length || yard[(width*length-1) + (yCoords*(length-1)+(xCoords+1))][s.getZ() + 1] == null) {
 						vrij = true;
 					} else {
 						vrij = false;
@@ -223,7 +225,7 @@ public class Yard {
 							vrij = true;
 						}
 					}
-					if (s.getXMax()/10 == 0 || yard[width * length + yCoords * (length - 1) + xCoords][s.getZ() + 1] == null) {
+					if (s.getXMax()/10 == 0 || yard[(width*length-1) + (yCoords*(length-1)+(xCoords))][s.getZ() + 1] == null) {
 						vrij = true;
 					} else {
 						vrij = false;
