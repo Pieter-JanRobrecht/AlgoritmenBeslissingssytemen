@@ -94,7 +94,7 @@ public class Yard {
 					// ([yCoords*length+xCoords]-yCoords) ZIE EXCEL
 					System.out.println("DEBUG (STAGGERED) - [" + (width * length + yCoords * (length - 1) + xCoords)
 							+ "] || [" + s.getZ() + "]");
-					yard[(width*length-1) + (yCoords*(length-1)+(xCoords+1))][s.getZ()] = s;
+					yard[(width * length - 1) + (yCoords * (length - 1) + (xCoords + 1))][s.getZ()] = s;
 					if (s.getItem() != null)
 						itemIDList.put(s.getItem().getId(), s);
 				} else { // not staggered
@@ -167,9 +167,10 @@ public class Yard {
 	public boolean digItem(Item i) {
 		boolean succes = false;
 		Slot core = itemIDList.get(i.getId());
-		if(maakVrij(core)) {
-			//mogen nu vrij bewegen!
-			core.setItem(null); // --> zogezegd naar eindslot gemoved en verwijdert uit yard
+		if (maakVrij(core)) {
+			// mogen nu vrij bewegen!
+			core.setItem(null); // --> zogezegd naar eindslot gemoved en
+								// verwijdert uit yard
 		}
 		return succes;
 	}
@@ -249,9 +250,9 @@ public class Yard {
 	}
 
 	public void moveItem(Slot s) {
-		
+
 	}
-	
+
 	public boolean executeJob(Job j, String mode) {
 		boolean succes = false;
 
@@ -262,5 +263,18 @@ public class Yard {
 		}
 
 		return succes;
+
+	}
+
+	public void printHash() {
+		// System.out.println(itemIDList);
+		System.out.println("Printing Hash Map!");
+		for (Integer id : itemIDList.keySet()) {
+
+			int slot = itemIDList.get(id).getId();
+			int container = itemIDList.get(id).getItem().getId();
+			System.out.println("Hash id:" + id + "\t Slot id:" + slot + "\t Container id:" + container);
+
+		}
 	}
 }
