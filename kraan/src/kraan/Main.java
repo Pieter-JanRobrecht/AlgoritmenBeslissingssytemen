@@ -15,6 +15,7 @@ public class Main {
 		 
         try {
         	//File file = new File("./data/1_50_50_10_FALSE_60_25_100.json");
+//			File file = new File ("C:/Users/Pieter-Jan/Documents/eclipse/AlgoritmenBeslissingssytemen/kraan/data/testInput.json");
 			File file = new File("./data/testInput.json");
         	
         	Problem uwProbleem = Problem.fromJson(file);
