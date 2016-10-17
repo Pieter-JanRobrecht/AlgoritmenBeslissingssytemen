@@ -4,3 +4,4 @@ kraan/.classpath
 *.project
 kraan/target/
 .recommenders/
+*.iml
