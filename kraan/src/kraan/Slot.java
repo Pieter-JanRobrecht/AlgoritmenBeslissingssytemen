@@ -78,6 +78,15 @@ public class Slot {
     	else return false;
     }
     
+    public boolean isInput() {
+    	if(this.type.toString().contains("INPUT")) return true;
+    	else return false;
+    }
+
+    public boolean isOutput() {
+    	if(this.type.toString().contains("OUTPUT")) return true;
+    	else return false;
+    }
     @Override
 	public String toString() {
 		return "Slot [id=" + id + ", centerX=" + centerX + ", centerY=" + centerY + ", xMin=" + xMin + ", xMax=" + xMax
