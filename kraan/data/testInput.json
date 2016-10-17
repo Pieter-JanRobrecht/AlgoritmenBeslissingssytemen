@@ -43,6 +43,18 @@
     },
     {
       "id": 12
+    },
+    {
+      "id": 13
+    },
+    {
+      "id": 14
+    },
+    {
+      "id": 15
+    },
+    {
+      "id": 16
     }
   ],
   "slots": [
@@ -162,7 +174,8 @@
       "minY": 0,
       "maxY": 10,
       "z": 1,
-      "type": "STORAGE"
+      "type": "STORAGE",
+      "itemId": 12
     },
     {
       "id": 10,
@@ -173,7 +186,8 @@
       "minY": 0,
       "maxY": 10,
       "z": 1,
-      "type": "STORAGE"
+      "type": "STORAGE",
+      "itemId": 13
     },
     {
       "id": 11,
@@ -184,7 +198,8 @@
       "minY": 0,
       "maxY": 10,
       "z": 1,
-      "type": "STORAGE"
+      "type": "STORAGE",
+      "itemId": 1
     },
 	{
       "id": 12,

@@ -119,4 +119,17 @@ public class Yard {
 			System.out.println();
 		}
 	}
+
+	public void printHash() {
+//		System.out.println(itemIDList);
+		System.out.println("Printing Hash Map!");
+		for (Integer id: itemIDList.keySet()){
+			
+            int slot = itemIDList.get(id).getId();
+            int container = itemIDList.get(id).getItem().getId();
+            System.out.println("Hash id:" + id + "\t Slot id:" + slot + "\t Container id:"+container);  
+
+
+} 
+	}
 }
