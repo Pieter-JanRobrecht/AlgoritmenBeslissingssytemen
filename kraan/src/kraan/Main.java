@@ -44,6 +44,7 @@ public class Main extends Application {
                 	//y.printOutYard();
         		}
         	}
+        	
         	System.out.println("Done!");
         	System.out.println("Tasks in backlog IN (" + y.getBacklogIN().size()+"): " + y.getBacklogIN().toString());
         	System.out.println("Tasks in backlog OUT (" + y.getBacklogOUT().size()+"): " + y.getBacklogOUT().toString());
