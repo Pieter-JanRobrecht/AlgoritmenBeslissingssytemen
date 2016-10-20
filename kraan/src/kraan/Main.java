@@ -1,11 +1,13 @@
 package kraan;
 
+import controller.Controller;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import model.Yard;
+import view.View;
 
 import java.io.File;
 import java.io.IOException;
@@ -66,12 +68,25 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
+			//Laden van de fxml file waarin alle gui elementen zitten
 			FXMLLoader loader = new FXMLLoader();
 			Parent root = (Parent) loader.load(getClass().getClassLoader().getResource("Sample.fxml").openStream());
 
+			//Setten van enkele elementen van het hoofdscherm
 			primaryStage.setTitle("Kranen probleem");
 			primaryStage.setScene(new Scene(root));
 			primaryStage.show();
+
+			//Ophalen van de controller horende bij de view klasse
+			View viewController = loader.<View>getController() ;
+			assert(viewController != null);
+
+			Controller controller = new Controller();
+
+			//Link tussen controller en view
+			viewController.setController(controller);
+			controller.addObserver(viewController);
+//			setFirstFile(controller);
 
 		} catch (IOException e) {
 			e.printStackTrace();
