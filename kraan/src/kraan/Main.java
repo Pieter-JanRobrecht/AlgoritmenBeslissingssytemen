@@ -16,7 +16,7 @@ public class Main extends Application {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		 
+
         try {
 			//Misschien zorgt deze lijn voor problemen
 			//Zoja, pech gehad
@@ -25,12 +25,12 @@ public class Main extends Application {
 			//File file = new File("./data/testInput.json");
 
         	Problem uwProbleem = Problem.fromJson(file);
- 
-        	
+
+
         	Yard y = new Yard(uwProbleem);
         	//y.printOutYard();
         	//y.printHash();
-        	
+
         	int inLimit = uwProbleem.getInputJobSequence().size();
         	int outLimit = uwProbleem.getOutputJobSequence().size();
         	int limit = Math.max(inLimit, outLimit);
@@ -46,7 +46,7 @@ public class Main extends Application {
                 	//y.printOutYard();
         		}
         	}
-        	
+
         	System.out.println("Done!");
         	System.out.println("Tasks in backlog IN (" + y.getBacklogIN().size()+"): " + y.getBacklogIN().toString());
         	System.out.println("Tasks in backlog OUT (" + y.getBacklogOUT().size()+"): " + y.getBacklogOUT().toString());
@@ -54,7 +54,7 @@ public class Main extends Application {
         	for(Job j : y.getBacklogIN()) {
         		y.executeJob(j, "INPUT");
         	}
-        	
+
         	for(Job j : y.getBacklogOUT()) {
         		y.executeJob(j, "OUTPUT");
         	}
