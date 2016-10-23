@@ -15,21 +15,13 @@ import java.io.IOException;
 public class Main extends Application {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 
         try {
-			//Misschien zorgt deze lijn voor problemen
-			//Zoja, pech gehad
 			File file = new File(Main.class.getClassLoader().getResource("1_50_50_10_FALSE_60_25_100.json").toURI());
-//        	File file = new File("./data/1_50_50_10_FALSE_60_25_100.json");
-			//File file = new File("./data/testInput.json");
 
         	Problem uwProbleem = Problem.fromJson(file);
 
-
         	Yard y = new Yard(uwProbleem);
-        	//y.printOutYard();
-        	//y.printHash();
 
         	int inLimit = uwProbleem.getInputJobSequence().size();
         	int outLimit = uwProbleem.getOutputJobSequence().size();
@@ -86,7 +78,6 @@ public class Main extends Application {
 			//Link tussen controller en view
 			viewController.setController(controller);
 			controller.addObserver(viewController);
-//			setFirstFile(controller);
 
 		} catch (IOException e) {
 			e.printStackTrace();
