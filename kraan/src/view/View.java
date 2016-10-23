@@ -1,13 +1,22 @@
 package view;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
 import controller.Controller;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.TabPane;
+import javafx.geometry.Insets;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.*;
 import kraan.Problem;
+import kraan.Slot;
 
 
 /**
@@ -17,40 +26,152 @@ public class View implements Observer {
 
     private Controller controller;
 
-    public void setController(Controller c){
+    public void setController(Controller c) {
         this.controller = c;
     }
 
     @FXML
-    private TabPane tabPane;
+    private ComboBox<String> dropDown;
 
-    private void initTabField(){
+    @FXML
+    private VBox vBox;
+
+    @FXML
+    private VBox mainBox;
+
+    @FXML
+    void doStep(ActionEvent event) {
+
+    }
+
+    @FXML
+    void doComplete(ActionEvent event) {
+
+    }
+
+    private void initField() {
         Problem huidigProbleem = controller.getHuidigProbleem();
-        int lengteX = huidigProbleem.getMaxX();
-//        System.out.println(lengteX);
+        int aantalLevels = huidigProbleem.getMaxLevels();
+
+        initVBox();
+        initDropDown(aantalLevels);
+    }
+
+    private void initDropDown(int aantalLevels) {
+        for (int i = 0; i < aantalLevels; i++) {
+            dropDown.getItems().add("Level " + i);
+        }
+
+        dropDown.valueProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue ov, String oldValue, String newValue) {
+                int level = Integer.parseInt(newValue.split(" ")[1]);
+                showLevel(level);
+            }
+        });
+    }
+
+    private void initVBox() {
+        int aantalGantries = controller.getHuidigProbleem().getGantries().size();
+
+        for (int i = 1; i <= aantalGantries; i++) {
+            String gantryLabelName = "Gantry " + i;
+            Label gantry = new Label(gantryLabelName);
+            gantry.setPadding(new Insets(5, 5, 5, 5));
+
+            TextField textField = new TextField();
+            textField.setEditable(false);
+            textField.setId("gantryText" + i);
+            textField.setPromptText("Container ID");
+            textField.setPadding(new Insets(0, 5, 5, 5));
+
+            vBox.getChildren().addAll(gantry, textField);
+        }
+    }
+
+    private void showLevel(int level) {
+        try {
+            mainBox.getChildren().remove(1);
+        } catch (IndexOutOfBoundsException e) {}
+        Problem huidigProbleem = controller.getHuidigProbleem();
+
+        int lengteX = (huidigProbleem.getMaxX() - 10) / 10;
+        int lengteY = huidigProbleem.getMaxY() / 10;
+
+        makeGrid(lengteX * 2, lengteY * 2);
+        fillGrid(level);
+    }
+
+    private void makeGrid(int lengteX, int lengteY) {
+        GridPane grid = new GridPane();
+
+        //Aantal kolommen zetten
+        for (int j = 0; j < lengteX; j++) {
+            ColumnConstraints colConst = new ColumnConstraints();
+            colConst.setPercentWidth(100.0 / lengteX);
+            grid.getColumnConstraints().add(colConst);
+        }
+
+        //Aantal rijen zetten
+        for (int j = 0; j < lengteY; j++) {
+            RowConstraints rowConst = new RowConstraints();
+            rowConst.setPercentHeight(100.0 / lengteY);
+            grid.getRowConstraints().add(rowConst);
+        }
+
+        mainBox.getChildren().add(grid);
+    }
+
+    private void fillGrid(int level) {
+        List<Slot> slots = controller.getHuidigProbleem().getSlots();
+        GridPane grid = (GridPane) mainBox.getChildren().get(1);
+
+        int cx = 0;
+        int cy = 0;
+        for (Slot s : slots) {
+            if (s.getZ() == level) {
+
+                if (s.getItem() != null) {
+                    cx = s.getCenterX() / 5;
+                    cy = s.getCenterY() / 5;
+                }
+
+                List<Pane> canvassen = new ArrayList<>();
+                for (int i = 0; i < 4; i++) {
+                    Pane canvas = new Pane();
+                    canvassen.add(canvas);
+                }
+
+                canvassen.get(0).setStyle("-fx-background-color: lightgrey; -fx-border-color: black lightgrey lightgrey black;");
+                canvassen.get(1).setStyle("-fx-background-color: lightgrey; -fx-border-color: lightgrey lightgrey black black;");
+                canvassen.get(2).setStyle("-fx-background-color: lightgrey; -fx-border-color: black black lightgrey lightgrey;");
+                canvassen.get(3).setStyle("-fx-background-color: lightgrey; -fx-border-color: lightgrey black black lightgrey;");
+                if(cx != 0 && cy != 0) {
+                    grid.add(canvassen.get(0), cx - 1, cy - 1);
+                    grid.add(canvassen.get(1), cx - 1, cy);
+                    grid.add(canvassen.get(2), cx, cy - 1);
+                    grid.add(canvassen.get(3), cx, cy);
+                }
+            }
+        }
     }
 
     @FXML
     void loadFileBigNietGeschrankt(ActionEvent event) {
         controller.setFileBigNietGeschrankt();
-        initTabField();
+        initField();
     }
 
     @FXML
     void loadFileBigSchrankt(ActionEvent event) {
         controller.setFileBigGeschrankt();
-        initTabField();
+        initField();
     }
 
     @FXML
     void loadFileSmall(ActionEvent event) {
         controller.setFileSmall();
-        initTabField();
-    }
-
-    @FXML
-    void startSimulation(ActionEvent event) {
-        //TODO write simulation procedure
+        initField();
     }
 
     @Override
