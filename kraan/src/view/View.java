@@ -27,7 +27,7 @@ public class View implements Observer {
     private void initTabField(){
         Problem huidigProbleem = controller.getHuidigProbleem();
         int lengteX = huidigProbleem.getMaxX();
-        System.out.println(lengteX);
+//        System.out.println(lengteX);
     }
 
     @FXML
