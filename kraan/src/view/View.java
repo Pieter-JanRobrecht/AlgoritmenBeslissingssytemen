@@ -6,14 +6,14 @@ import java.util.Observable;
 import java.util.Observer;
 
 import controller.Controller;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Label;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
 import kraan.Problem;
 import kraan.Slot;
@@ -46,62 +46,71 @@ public class View implements Observer {
         int lengteY = huidigProbleem.getMaxY()/10;
 
         makeTabs(lengteX*2,lengteY*2,lengteZ);
-        fillFieldWithContainers();
+//        fillFieldWithContainers();
 
     }
 
-    private void fillFieldWithContainers() {
-        List<Slot> slots = controller.getHuidigProbleem().getSlots();
-
-        //Enkele de slots nemen waar een item in zit
-        int cx=0;
-        int cy=0;
-        for(Slot s : slots){
-            if(s.getItem()!=null){
-                cx = s.getCenterX()/5;
-                cy = s.getCenterY()/5;
-            }
-            List<Pane> canvassen = new ArrayList<>();
-            for(int i =0;i< 4;i++){
-                Pane canvas = new Pane();
-                canvassen.add(canvas);
-            }
-
-            GridPane grid = (GridPane) tabPane.getTabs().get(s.getZ()).getContent();
-            canvassen.get(0).setStyle("-fx-background-color: lightgrey; -fx-border-color: black lightgrey lightgrey black;");
-            canvassen.get(1).setStyle("-fx-background-color: lightgrey; -fx-border-color: lightgrey lightgrey black black;");
-            canvassen.get(2).setStyle("-fx-background-color: lightgrey; -fx-border-color: black black lightgrey lightgrey;");
-            canvassen.get(3).setStyle("-fx-background-color: lightgrey; -fx-border-color: lightgrey black black lightgrey;");
-            grid.add(canvassen.get(0), cx-1 , cy-1);
-            grid.add(canvassen.get(1), cx-1 , cy);
-            grid.add(canvassen.get(2), cx , cy-1);
-            grid.add(canvassen.get(3), cx , cy);
-        }
-    }
+//    private void fillFieldWithContainers() {
+//        List<Slot> slots = controller.getHuidigProbleem().getSlots();
+//
+//        //Enkele de slots nemen waar een item in zit
+//        int cx=0;
+//        int cy=0;
+//        for(Slot s : slots){
+//            if(s.getItem()!=null){
+//                cx = s.getCenterX()/5;
+//                cy = s.getCenterY()/5;
+//            }
+//            List<Pane> canvassen = new ArrayList<>();
+//            for(int i =0;i< 4;i++){
+//                Pane canvas = new Pane();
+//                canvassen.add(canvas);
+//            }
+//
+//            GridPane grid = (GridPane) tabPane.getTabs().get(s.getZ()).getContent();
+//            canvassen.get(0).setStyle("-fx-background-color: lightgrey; -fx-border-color: black lightgrey lightgrey black;");
+//            canvassen.get(1).setStyle("-fx-background-color: lightgrey; -fx-border-color: lightgrey lightgrey black black;");
+//            canvassen.get(2).setStyle("-fx-background-color: lightgrey; -fx-border-color: black black lightgrey lightgrey;");
+//            canvassen.get(3).setStyle("-fx-background-color: lightgrey; -fx-border-color: lightgrey black black lightgrey;");
+//            grid.add(s.pane, cx-1 , cy-1);
+//            grid.add(s.pane, cx-1 , cy);
+//            grid.add(s.pane, cx , cy-1);
+//            grid.add(s.pane, cx , cy);
+//        }
+//    }
 
     private void makeTabs(int lengteX, int lengteY, int lengteZ) {
         //Alle tabs toevoegen
         for (int i = 0; i < lengteZ; i++) {
             Tab tab = new Tab();
             tab.setText("Tab" + i);
-            GridPane grid = new GridPane();
-//            grid.setGridLinesVisible(true);
 
-            //Aantal kolommen zetten
-            for (int j = 0; j < lengteY; j++) {
-                ColumnConstraints colConst = new ColumnConstraints();
-                colConst.setPercentWidth(100.0 / lengteX);
-                grid.getColumnConstraints().add(colConst);
-            }
 
-            //Aantal rijen zetten
+            ObservableList<String> nullData = FXCollections.observableArrayList();
+            TableView<String> table = new TableView<>();
+
+            table.setEditable(false);
+
             for (int j = 0; j < lengteX; j++) {
-                RowConstraints rowConst = new RowConstraints();
-                rowConst.setPercentHeight(100.0 / lengteY);
-                grid.getRowConstraints().add(rowConst);
+                String kolomNaam = "kolom" + j;
+                TableColumn hulp = new TableColumn(kolomNaam);
+                hulp.setCellValueFactory(new PropertyValueFactory<String,String>(kolomNaam));
+                table.getColumns().add(hulp);
             }
 
-            tab.setContent(grid);
+            for(int u =0;u<lengteY;u++) {
+//                List<String> lijst = new ArrayList<>();
+//                nullData.add(lijst);
+//                for (int j = 0; j < lengteX; j++) {
+                    nullData.add(""+u);
+//                }
+            }
+
+            table.setItems(nullData);
+
+            table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+            tab.setContent(table);
             tabPane.getTabs().add(tab);
         }
     }
@@ -163,6 +172,12 @@ public class View implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
+
+    }
+
+    @FXML
+    public void initialize(){
+
 
     }
 }
