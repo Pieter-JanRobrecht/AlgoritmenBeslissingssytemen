@@ -109,6 +109,12 @@ public class View implements Observer {
     private void initVBox(){
         int aantalGantries = controller.getHuidigProbleem().getGantries().size();
 
+        int aantalElementenBehouden = 3;
+        int aantalElementen = vBox.getChildren().size();
+        for(int i = aantalElementen ; i>aantalElementenBehouden; i--){
+            vBox.getChildren().remove(i-1);
+        }
+
         for(int i = 1; i<=aantalGantries;i++){
             String gantryLabelName = "Gantry " + i;
             Label gantry = new Label(gantryLabelName);

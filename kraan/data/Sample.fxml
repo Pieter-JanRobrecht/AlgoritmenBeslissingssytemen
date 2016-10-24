@@ -40,7 +40,7 @@
             </VBox>
          </top>
          <left>
-            <VBox alignment="TOP_CENTER" BorderPane.alignment="CENTER">
+            <VBox fx:id="vBox" alignment="TOP_CENTER" BorderPane.alignment="CENTER">
                <children>
                   <Label alignment="CENTER" text="Simulation">
                      <VBox.margin>
