@@ -40,6 +40,12 @@ public class View implements Observer {
     private VBox mainBox;
 
     @FXML
+    private AnchorPane anchorPane;
+
+    @FXML
+    private GridPane gridPane;
+
+    @FXML
     void doStep(ActionEvent event) {
 
     }
@@ -55,20 +61,6 @@ public class View implements Observer {
 
         initVBox();
         initDropDown(aantalLevels);
-    }
-
-    private void initDropDown(int aantalLevels) {
-        for (int i = 0; i < aantalLevels; i++) {
-            dropDown.getItems().add("Level " + i);
-        }
-
-        dropDown.valueProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue ov, String oldValue, String newValue) {
-                int level = Integer.parseInt(newValue.split(" ")[1]);
-                showLevel(level);
-            }
-        });
     }
 
     private void initVBox() {
@@ -89,11 +81,24 @@ public class View implements Observer {
         }
     }
 
+    private void initDropDown(int aantalLevels) {
+        for (int i = 0; i < aantalLevels; i++) {
+            dropDown.getItems().add("Level " + i);
+        }
+
+        dropDown.valueProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue ov, String oldValue, String newValue) {
+                int level = Integer.parseInt(newValue.split(" ")[1]);
+                showLevel(level);
+            }
+        });
+    }
+
     private void showLevel(int level) {
-        try {
-            mainBox.getChildren().remove(1);
-        } catch (IndexOutOfBoundsException e) {}
         Problem huidigProbleem = controller.getHuidigProbleem();
+
+//        anchorPane.getChildren().clear();
 
         int lengteX = (huidigProbleem.getMaxX() - 10) / 10;
         int lengteY = huidigProbleem.getMaxY() / 10;
@@ -103,28 +108,24 @@ public class View implements Observer {
     }
 
     private void makeGrid(int lengteX, int lengteY) {
-        GridPane grid = new GridPane();
 
         //Aantal kolommen zetten
         for (int j = 0; j < lengteX; j++) {
             ColumnConstraints colConst = new ColumnConstraints();
             colConst.setPercentWidth(100.0 / lengteX);
-            grid.getColumnConstraints().add(colConst);
+            gridPane.getColumnConstraints().add(colConst);
         }
 
         //Aantal rijen zetten
         for (int j = 0; j < lengteY; j++) {
             RowConstraints rowConst = new RowConstraints();
             rowConst.setPercentHeight(100.0 / lengteY);
-            grid.getRowConstraints().add(rowConst);
+            gridPane.getRowConstraints().add(rowConst);
         }
-
-        mainBox.getChildren().add(grid);
     }
 
     private void fillGrid(int level) {
         List<Slot> slots = controller.getHuidigProbleem().getSlots();
-        GridPane grid = (GridPane) mainBox.getChildren().get(1);
 
         int cx = 0;
         int cy = 0;
@@ -147,10 +148,10 @@ public class View implements Observer {
                 canvassen.get(2).setStyle("-fx-background-color: lightgrey; -fx-border-color: black black lightgrey lightgrey;");
                 canvassen.get(3).setStyle("-fx-background-color: lightgrey; -fx-border-color: lightgrey black black lightgrey;");
                 if(cx != 0 && cy != 0) {
-                    grid.add(canvassen.get(0), cx - 1, cy - 1);
-                    grid.add(canvassen.get(1), cx - 1, cy);
-                    grid.add(canvassen.get(2), cx, cy - 1);
-                    grid.add(canvassen.get(3), cx, cy);
+                    gridPane.add(canvassen.get(0), cx - 1, cy - 1);
+                    gridPane.add(canvassen.get(1), cx - 1, cy);
+                    gridPane.add(canvassen.get(2), cx, cy - 1);
+                    gridPane.add(canvassen.get(3), cx, cy);
                 }
             }
         }
