@@ -13,10 +13,13 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
 import kraan.Problem;
 import kraan.Slot;
+
+import javax.swing.text.*;
 
 
 /**
@@ -50,17 +53,19 @@ public class View implements Observer {
 
     }
 
-//    private void fillFieldWithContainers() {
-//        List<Slot> slots = controller.getHuidigProbleem().getSlots();
-//
-//        //Enkele de slots nemen waar een item in zit
-//        int cx=0;
-//        int cy=0;
-//        for(Slot s : slots){
-//            if(s.getItem()!=null){
-//                cx = s.getCenterX()/5;
-//                cy = s.getCenterY()/5;
-//            }
+    private void fillFieldWithContainers() {
+        List<Slot> slots = controller.getHuidigProbleem().getSlots();
+
+        //Enkele de slots nemen waar een item in zit
+        int cx=0;
+        int cy=0;
+        for(Slot s : slots){
+            if(s.getItem()!=null){
+                cx = s.getCenterX()/5;
+                cy = s.getCenterY()/5;
+            }
+            TableView table = (TableView) tabPane.getTabs().get(s.getZ()).getContent();
+            table.getColumns().get
 //            List<Pane> canvassen = new ArrayList<>();
 //            for(int i =0;i< 4;i++){
 //                Pane canvas = new Pane();
@@ -76,8 +81,8 @@ public class View implements Observer {
 //            grid.add(s.pane, cx-1 , cy);
 //            grid.add(s.pane, cx , cy-1);
 //            grid.add(s.pane, cx , cy);
-//        }
-//    }
+        }
+    }
 
     private void makeTabs(int lengteX, int lengteY, int lengteZ) {
         //Alle tabs toevoegen
