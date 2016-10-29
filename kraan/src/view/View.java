@@ -15,8 +15,13 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
+import javafx.stage.Popup;
 import kraan.Problem;
 import kraan.Slot;
+import org.controlsfx.control.NotificationPane;
+import org.controlsfx.control.Notifications;
+
+import javax.management.Notification;
 
 
 /**
@@ -37,16 +42,39 @@ public class View implements Observer {
     private VBox vBox;
 
     @FXML
+    private VBox mainBox;
+
+    @FXML
     private AnchorPane anchorPane;
 
     @FXML
-    void doStep(ActionEvent event) {
+    private TextField stepField;
 
+    @FXML
+    void doStep(ActionEvent event) {
+        String fieldString = stepField.getText();
+        try {
+            int aantalStappen = Integer.parseInt(fieldString);
+
+            if (aantalStappen + controller.getKlok() > controller.getLimit())
+                throw new Exception();
+
+            for (int i = 0; i < aantalStappen - 1 && controller.getKlok() < controller.getLimit(); i++) {
+                controller.doStep(false);
+            }
+            controller.doStep(true);
+        } catch (Exception e) {
+            //TODO show popup
+            System.out.println("Er was een probleem");
+        }
     }
 
     @FXML
     void doComplete(ActionEvent event) {
-
+        for (int i = 0; i < controller.getLimit() - 1; i++) {
+            controller.doStep(false);
+        }
+        controller.doStep(true);
     }
 
     public void initField() {
@@ -57,12 +85,14 @@ public class View implements Observer {
         initDropDown(aantalLevels);
     }
 
-    public void resetField(){
+    private void resetField() {
+        controller.reset();
+
         //Reset van gantry velden
-        int aantalElementenBehouden = 3;
+        int aantalElementenBehouden = 4;
         int aantalElementen = vBox.getChildren().size();
-        for(int i = aantalElementen ; i>aantalElementenBehouden; i--){
-            vBox.getChildren().remove(i-1);
+        for (int i = aantalElementen; i > aantalElementenBehouden; i--) {
+            vBox.getChildren().remove(i - 1);
         }
 
         dropDown.getItems().clear();
@@ -94,7 +124,7 @@ public class View implements Observer {
         dropDown.valueProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue ov, String oldValue, String newValue) {
-                if(newValue != null) {
+                if (newValue != null) {
                     int level = Integer.parseInt(newValue.split(" ")[1]);
                     anchorPane.getChildren().clear();
                     showLevel(level);
@@ -119,10 +149,10 @@ public class View implements Observer {
         GridPane gridPane = new GridPane();
         gridPane.setId("gridID");
 
-        AnchorPane.setTopAnchor(gridPane,0.0);
-        AnchorPane.setBottomAnchor(gridPane,0.0);
-        AnchorPane.setLeftAnchor(gridPane,0.0);
-        AnchorPane.setRightAnchor(gridPane,0.0);
+        AnchorPane.setTopAnchor(gridPane, 0.0);
+        AnchorPane.setBottomAnchor(gridPane, 0.0);
+        AnchorPane.setLeftAnchor(gridPane, 0.0);
+        AnchorPane.setRightAnchor(gridPane, 0.0);
 
         anchorPane.getChildren().add(gridPane);
 
@@ -165,7 +195,7 @@ public class View implements Observer {
                 canvassen.get(1).setStyle("-fx-background-color: lightgrey; -fx-border-color: lightgrey lightgrey black black;");
                 canvassen.get(2).setStyle("-fx-background-color: lightgrey; -fx-border-color: black black lightgrey lightgrey;");
                 canvassen.get(3).setStyle("-fx-background-color: lightgrey; -fx-border-color: lightgrey black black lightgrey;");
-                if(cx != 0 && cy != 0) {
+                if (cx != 0 && cy != 0) {
                     gridPane.add(canvassen.get(0), cx - 1, cy - 1);
                     gridPane.add(canvassen.get(1), cx - 1, cy);
                     gridPane.add(canvassen.get(2), cx, cy - 1);
@@ -198,6 +228,7 @@ public class View implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
+        //TODO schrijven van een updater
 
     }
 }
