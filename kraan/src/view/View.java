@@ -63,9 +63,17 @@ public class View implements Observer {
                 controller.doStep(false);
             }
             controller.doStep(true);
-        } catch (Exception e) {
-            //TODO show popup
-            System.out.println("Er was een probleem");
+        } catch (NumberFormatException e) {
+            Notifications.create()
+                    .title("ERROR")
+                    .text("It's number of steps, not string of steps")
+                    .showWarning();
+        } catch (Exception ex){
+            int max = controller.getLimit()-controller.getKlok();
+            Notifications.create()
+                    .title("ERROR")
+                    .text("Amount of steps is too big, maximum allowed is: "+ max)
+                    .showWarning();
         }
     }
 
@@ -110,7 +118,6 @@ public class View implements Observer {
             textField.setEditable(false);
             textField.setId("gantryText" + i);
             textField.setPromptText("Container ID");
-            textField.setPadding(new Insets(0, 5, 5, 5));
 
             vBox.getChildren().addAll(gantry, textField);
         }
@@ -144,7 +151,6 @@ public class View implements Observer {
     }
 
     private void makeGrid(int lengteX, int lengteY) {
-//        gridPane.getChildren().clear();
 
         GridPane gridPane = new GridPane();
         gridPane.setId("gridID");
@@ -172,35 +178,33 @@ public class View implements Observer {
     }
 
     private void fillGrid(int level) {
-        List<Slot> slots = controller.getHuidigProbleem().getSlots();
+        Slot[][] yard = controller.getYard().getYard();
 
         GridPane gridPane = (GridPane) anchorPane.lookup("#gridID");
         int cx = 0;
         int cy = 0;
-        for (Slot s : slots) {
-            if (s.getZ() == level) {
 
-                if (s.getItem() != null) {
-                    cx = s.getCenterX() / 5;
-                    cy = s.getCenterY() / 5;
-                }
+        for(int i=0;i<yard.length;i++){
+            Slot slot = yard[i][level];
+            if( slot.getItem() != null){
+                cx = slot.getCenterX() / 5;
+                cy = slot.getCenterY() / 5;
+            }
+            List<Pane> canvassen = new ArrayList<>();
+            for (int j = 0; j < 4; j++) {
+                Pane canvas = new Pane();
+                canvassen.add(canvas);
+            }
 
-                List<Pane> canvassen = new ArrayList<>();
-                for (int i = 0; i < 4; i++) {
-                    Pane canvas = new Pane();
-                    canvassen.add(canvas);
-                }
-
-                canvassen.get(0).setStyle("-fx-background-color: lightgrey; -fx-border-color: black lightgrey lightgrey black;");
-                canvassen.get(1).setStyle("-fx-background-color: lightgrey; -fx-border-color: lightgrey lightgrey black black;");
-                canvassen.get(2).setStyle("-fx-background-color: lightgrey; -fx-border-color: black black lightgrey lightgrey;");
-                canvassen.get(3).setStyle("-fx-background-color: lightgrey; -fx-border-color: lightgrey black black lightgrey;");
-                if (cx != 0 && cy != 0) {
-                    gridPane.add(canvassen.get(0), cx - 1, cy - 1);
-                    gridPane.add(canvassen.get(1), cx - 1, cy);
-                    gridPane.add(canvassen.get(2), cx, cy - 1);
-                    gridPane.add(canvassen.get(3), cx, cy);
-                }
+            canvassen.get(0).setStyle("-fx-background-color: lightgrey; -fx-border-color: black lightgrey lightgrey black;");
+            canvassen.get(1).setStyle("-fx-background-color: lightgrey; -fx-border-color: lightgrey lightgrey black black;");
+            canvassen.get(2).setStyle("-fx-background-color: lightgrey; -fx-border-color: black black lightgrey lightgrey;");
+            canvassen.get(3).setStyle("-fx-background-color: lightgrey; -fx-border-color: lightgrey black black lightgrey;");
+            if (cx != 0 && cy != 0) {
+                gridPane.add(canvassen.get(0), cx - 1, cy - 1);
+                gridPane.add(canvassen.get(1), cx - 1, cy);
+                gridPane.add(canvassen.get(2), cx, cy - 1);
+                gridPane.add(canvassen.get(3), cx, cy);
             }
         }
     }
@@ -213,7 +217,7 @@ public class View implements Observer {
     }
 
     @FXML
-    void loadFileBigSchrankt(ActionEvent event) {
+    void loadFileBigGeschrankt(ActionEvent event) {
         controller.setFileBigGeschrankt();
         resetField();
         initField();
@@ -228,7 +232,7 @@ public class View implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-        //TODO schrijven van een updater
+        //TODO voor stukken up te daten
 
     }
 }

@@ -27,7 +27,7 @@
                       <Menu mnemonicParsing="false" text="File">
                         <items>
                               <MenuItem mnemonicParsing="false" onAction="#loadFileBigNietGeschrankt" text="Big test niet-geschrankt" />
-                          <MenuItem mnemonicParsing="false" onAction="#loadFileBigSchrankt" text="Big test geschrankt" />
+                          <MenuItem mnemonicParsing="false" onAction="#loadFileBigGeschrankt" text="Big test geschrankt" />
                               <MenuItem mnemonicParsing="false" onAction="#loadFileSmall" text="Small test" />
                         </items>
                       </Menu>

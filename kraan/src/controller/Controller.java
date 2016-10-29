@@ -141,4 +141,8 @@ public class Controller extends Observable {
     public int getKlok() {
         return klok;
     }
+
+    public Yard getYard() {
+        return yard;
+    }
 }
