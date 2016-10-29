@@ -37,13 +37,7 @@ public class View implements Observer {
     private VBox vBox;
 
     @FXML
-    private VBox mainBox;
-
-    @FXML
     private AnchorPane anchorPane;
-
-    @FXML
-    private GridPane gridPane;
 
     @FXML
     void doStep(ActionEvent event) {
@@ -55,12 +49,23 @@ public class View implements Observer {
 
     }
 
-    private void initField() {
+    public void initField() {
         Problem huidigProbleem = controller.getHuidigProbleem();
         int aantalLevels = huidigProbleem.getMaxLevels();
 
         initVBox();
         initDropDown(aantalLevels);
+    }
+
+    public void resetField(){
+        //Reset van gantry velden
+        int aantalElementenBehouden = 3;
+        int aantalElementen = vBox.getChildren().size();
+        for(int i = aantalElementen ; i>aantalElementenBehouden; i--){
+            vBox.getChildren().remove(i-1);
+        }
+
+        dropDown.getItems().clear();
     }
 
     private void initVBox() {
@@ -89,16 +94,17 @@ public class View implements Observer {
         dropDown.valueProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue ov, String oldValue, String newValue) {
-                int level = Integer.parseInt(newValue.split(" ")[1]);
-                showLevel(level);
+                if(newValue != null) {
+                    int level = Integer.parseInt(newValue.split(" ")[1]);
+                    anchorPane.getChildren().clear();
+                    showLevel(level);
+                }
             }
         });
     }
 
     private void showLevel(int level) {
         Problem huidigProbleem = controller.getHuidigProbleem();
-
-//        anchorPane.getChildren().clear();
 
         int lengteX = (huidigProbleem.getMaxX() - 10) / 10;
         int lengteY = huidigProbleem.getMaxY() / 10;
@@ -108,6 +114,17 @@ public class View implements Observer {
     }
 
     private void makeGrid(int lengteX, int lengteY) {
+//        gridPane.getChildren().clear();
+
+        GridPane gridPane = new GridPane();
+        gridPane.setId("gridID");
+
+        AnchorPane.setTopAnchor(gridPane,0.0);
+        AnchorPane.setBottomAnchor(gridPane,0.0);
+        AnchorPane.setLeftAnchor(gridPane,0.0);
+        AnchorPane.setRightAnchor(gridPane,0.0);
+
+        anchorPane.getChildren().add(gridPane);
 
         //Aantal kolommen zetten
         for (int j = 0; j < lengteX; j++) {
@@ -127,6 +144,7 @@ public class View implements Observer {
     private void fillGrid(int level) {
         List<Slot> slots = controller.getHuidigProbleem().getSlots();
 
+        GridPane gridPane = (GridPane) anchorPane.lookup("#gridID");
         int cx = 0;
         int cy = 0;
         for (Slot s : slots) {
@@ -160,18 +178,21 @@ public class View implements Observer {
     @FXML
     void loadFileBigNietGeschrankt(ActionEvent event) {
         controller.setFileBigNietGeschrankt();
+        resetField();
         initField();
     }
 
     @FXML
     void loadFileBigSchrankt(ActionEvent event) {
         controller.setFileBigGeschrankt();
+        resetField();
         initField();
     }
 
     @FXML
     void loadFileSmall(ActionEvent event) {
         controller.setFileSmall();
+        resetField();
         initField();
     }
 

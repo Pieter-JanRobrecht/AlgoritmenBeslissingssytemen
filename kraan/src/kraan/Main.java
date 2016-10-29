@@ -86,6 +86,8 @@ public class Main extends Application {
 			//Link tussen controller en view
 			viewController.setController(controller);
 			controller.addObserver(viewController);
+			controller.setFileSmall();
+			viewController.initField();
 //			setFirstFile(controller);
 
 		} catch (IOException e) {
