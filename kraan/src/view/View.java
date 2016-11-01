@@ -1,5 +1,6 @@
 package view;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
@@ -78,7 +79,7 @@ public class View implements Observer {
     }
 
     @FXML
-    void doComplete(ActionEvent event) {
+    void doComplete(ActionEvent event) throws IOException {
         for (int i = 0; i < controller.getLimit() - 1; i++) {
             controller.doStep(false);
         }
