@@ -25,9 +25,15 @@ public class Controller extends Observable {
     private int limit, inLimit, outLimit, klok;
 
     private Yard yard;
-    FileWriter writer= new FileWriter("./data/csv/test.csv");
+    FileWriter writer;
     
     public Controller() throws IOException {
+        try {
+            File hulp = new File(Main.class.getClassLoader().getResource("test.csv").toURI());
+            writer = new FileWriter(hulp);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
         if (huidigProbleem == null) {
             setFileSmall();
         }
