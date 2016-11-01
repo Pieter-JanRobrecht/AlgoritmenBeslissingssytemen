@@ -49,7 +49,7 @@ public class Controller extends Observable {
 
        if(klok==0) {CSVUtils.writeLine(writer, Arrays.asList("gID","T","x","y","itemInCraneID")); writer.flush();}
        
-        
+            
         
     	
         if (klok < inLimit) {
