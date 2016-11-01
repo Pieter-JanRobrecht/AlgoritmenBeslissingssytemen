@@ -22,7 +22,7 @@ public class Yard {
 	private Slot inputSlot, outputSlot;
 	private List<Job> backlogOUT = new ArrayList<>();
 	private List<Job> backlogIN = new ArrayList<>();
-	private boolean debug = true;
+	private boolean debug = false;
 public List<Gantry> gantries;
 	public Yard(Problem probleem) {
 		System.out.println("Yard initiating..");
