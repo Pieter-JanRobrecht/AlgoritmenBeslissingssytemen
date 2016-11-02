@@ -134,7 +134,7 @@ public class View implements Observer {
             public void changed(ObservableValue ov, String oldValue, String newValue) {
                 if (newValue != null) {
                     int level = Integer.parseInt(newValue.split(" ")[1]);
-                    anchorPane.getChildren().clear();
+
                     showLevel(level);
                 }
             }
@@ -143,6 +143,7 @@ public class View implements Observer {
 
     private void showLevel(int level) {
         Problem huidigProbleem = controller.getHuidigProbleem();
+        anchorPane.getChildren().clear();
 
         int lengteX = (huidigProbleem.getMaxX() - 10) / 10;
         int lengteY = huidigProbleem.getMaxY() / 10;
@@ -234,6 +235,13 @@ public class View implements Observer {
     @Override
     public void update(Observable o, Object arg) {
         //TODO voor stukken up te daten
+        String output = dropDown.getSelectionModel().getSelectedItem().toString();
+        try {
+            int level = Integer.parseInt(output.split(" ")[1]);
 
+            showLevel(level);
+        }catch (NumberFormatException e){
+            //Hier moet er toch niks gebeuren.
+        }
     }
 }
