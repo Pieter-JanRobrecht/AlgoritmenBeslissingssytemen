@@ -35,13 +35,13 @@ public class Yard {
 	private FileWriter writer;
 
 	public Yard(Problem probleem) {
-		gantry = gantries.get(0);
 		clock = 0;
 		pickUpPlaceDuration = probleem.getPickupPlaceDuration();
 
 		System.out.println("Yard initiating..");
 		initializeYard(probleem);
 		gantries = probleem.getGantries();
+		gantry = gantries.get(0);
 		System.out.println("Yard initiation done!");
 
 		try {
@@ -281,6 +281,39 @@ public class Yard {
 				// itemIDList.remove(core.getItem().getId());
 				core.setItem(null); // --> zogezegd naar eindslot gemoved en
 				// verwijdert uit yard
+				
+				// Begin positie van gantry
+				int x = gantry.getStartX();
+				int y = gantry.getStartY();
+
+				double tijdBewegenNaarIngang = (Math.abs(inputSlot.getCenterX()) + x) * gantry.getXSpeed()
+						+ (Math.abs(inputSlot.getCenterY() + y) * gantry.getYSpeed());
+				int pickUp = 2 * pickUpPlaceDuration;
+				double tijdBewegenNaarPlaats = (Math.abs(inputSlot.getCenterX()) + core.getCenterX())
+						* gantry.getXSpeed()
+						+ (Math.abs(inputSlot.getCenterY() + core.getCenterY()) * gantry.getYSpeed());
+				int place = 2 * pickUpPlaceDuration;
+
+				// Plaats gantry updaten
+				gantry.setStartX(core.getCenterX());
+				gantry.setStartY(core.getCenterY());
+
+				clock += tijdBewegenNaarIngang + pickUp + tijdBewegenNaarPlaats + place;
+
+				// csv
+				csvparam1[0] = gantries.get(0).getId();
+				csvparam1[1] = core.getCenterX();
+				csvparam1[2] = core.getCenterY();
+				csvparam1[3] = core.getItem().getId();
+				csvparam1[4] = clock;
+
+				try {
+					CSVUtils.writeLine(writer, Arrays.asList("" + Yard.csvparam1[0], "" + Yard.csvparam1[4],
+							"" + Yard.csvparam1[1], "" + Yard.csvparam1[2], "" + Yard.csvparam1[3]));
+					writer.flush();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 		return succes;
@@ -334,41 +367,6 @@ public class Yard {
 				if (debug)
 					System.out.println((yard[yCoords * length + xCoords][s.getZ()].getItem() == null));
 				if (yard[yCoords * length + xCoords][s.getZ()].getItem() == null) {
-					Slot temp = yard[yCoords * length + xCoords][s.getZ()];
-
-					// Begin positie van gantry
-					int x = gantry.getStartX();
-					int y = gantry.getStartY();
-
-					double tijdBewegenNaarIngang = (Math.abs(inputSlot.getCenterX()) + x) * gantry.getXSpeed()
-							+ (Math.abs(inputSlot.getCenterY() + y) * gantry.getYSpeed());
-					int pickUp = 2 * pickUpPlaceDuration;
-					double tijdBewegenNaarPlaats = (Math.abs(inputSlot.getCenterX()) + temp.getCenterX())
-							* gantry.getXSpeed()
-							+ (Math.abs(inputSlot.getCenterY() + temp.getCenterY()) * gantry.getYSpeed());
-					int place = 2 * pickUpPlaceDuration;
-
-					// Plaats gantry updaten
-					gantry.setStartX(temp.getCenterX());
-					gantry.setStartY(temp.getCenterY());
-
-					clock += tijdBewegenNaarIngang + pickUp + tijdBewegenNaarPlaats + place;
-
-					// csv
-					csvparam1[0] = gantries.get(0).getId();
-					csvparam1[1] = temp.getCenterX();
-					csvparam1[2] = temp.getCenterY();
-					csvparam1[3] = temp.getItem().getId();
-					csvparam1[4] = clock;
-
-					try {
-						CSVUtils.writeLine(writer, Arrays.asList("" + Yard.csvparam1[0], "" + Yard.csvparam1[4],
-								"" + Yard.csvparam1[1], "" + Yard.csvparam1[2], "" + Yard.csvparam1[3]));
-						writer.flush();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-
 					return true;
 				} else {
 					vrij = false;
@@ -433,39 +431,6 @@ public class Yard {
 				if (debug)
 					System.out.println((yard[yCoords * length + xCoords][s.getZ()].getItem() == null));
 				if (yard[yCoords * length + xCoords][s.getZ()].getItem() == null) {
-					Slot temp = yard[yCoords * length + xCoords][s.getZ()];
-					// Begin positie van gantry
-					int x = gantry.getStartX();
-					int y = gantry.getStartY();
-
-					double tijdBewegenNaarIngang = (Math.abs(inputSlot.getCenterX()) + x) * gantry.getXSpeed()
-							+ (Math.abs(inputSlot.getCenterY() + y) * gantry.getYSpeed());
-					int pickUp = 2 * pickUpPlaceDuration;
-					double tijdBewegenNaarPlaats = (Math.abs(inputSlot.getCenterX()) + temp.getCenterX())
-							* gantry.getXSpeed()
-							+ (Math.abs(inputSlot.getCenterY() + temp.getCenterY()) * gantry.getYSpeed());
-					int place = 2 * pickUpPlaceDuration;
-
-					// Plaats gantry updaten
-					gantry.setStartX(temp.getCenterX());
-					gantry.setStartY(temp.getCenterY());
-
-					clock += tijdBewegenNaarIngang + pickUp + tijdBewegenNaarPlaats + place;
-
-					// csv
-					csvparam1[0] = gantries.get(0).getId();
-					csvparam1[1] = temp.getCenterX();
-					csvparam1[2] = temp.getCenterY();
-					csvparam1[3] = temp.getItem().getId();
-					csvparam1[4] = clock;
-
-					try {
-						CSVUtils.writeLine(writer, Arrays.asList("" + Yard.csvparam1[0], "" + Yard.csvparam1[4],
-								"" + Yard.csvparam1[1], "" + Yard.csvparam1[2], "" + Yard.csvparam1[3]));
-						writer.flush();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
 					return true;
 				} else {
 					vrij = false;
