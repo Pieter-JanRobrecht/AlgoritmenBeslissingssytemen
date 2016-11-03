@@ -4,7 +4,8 @@ package kraan;
  * Created by Wim on 12/05/2015.
  */
 public class Item {
-	private final int id;
+
+    private final int id;
 
     public Item(int id) {
         this.id = id;
@@ -13,10 +14,4 @@ public class Item {
     public int getId() {
         return id;
     }
-    
-    @Override
-	public String toString() {
-		return "Item [id=" + id + "]";
-	}
-
 }

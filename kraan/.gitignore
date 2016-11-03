@@ -1,7 +1,5 @@
-.metadata/
 *bin/
-kraan/.classpath
-*.project
-kraan/target/
-.recommenders/
-*.iml
+.classpath
+.project
+*target/
+.settings

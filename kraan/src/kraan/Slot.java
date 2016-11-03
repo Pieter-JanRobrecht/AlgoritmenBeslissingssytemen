@@ -23,7 +23,7 @@ public class Slot {
         this.type = type;
     }
 
-	public int getId() {
+    public int getId() {
         return id;
     }
 
@@ -72,24 +72,4 @@ public class Slot {
         OUTPUT,
         STORAGE
     }
-    
-    public boolean isStorage() {
-    	if(this.type.toString().contains("STORAGE")) return true;
-    	else return false;
-    }
-    
-    public boolean isInput() {
-    	if(this.type.toString().contains("INPUT")) return true;
-    	else return false;
-    }
-
-    public boolean isOutput() {
-    	if(this.type.toString().contains("OUTPUT")) return true;
-    	else return false;
-    }
-    @Override
-	public String toString() {
-		return "Slot [id=" + id + ", centerX=" + centerX + ", centerY=" + centerY + ", xMin=" + xMin + ", xMax=" + xMax
-				+ ", yMin=" + yMin + ", yMax=" + yMax + ", z=" + z + ", item=" + item + ", type=" + type + "]";
-	}
 }

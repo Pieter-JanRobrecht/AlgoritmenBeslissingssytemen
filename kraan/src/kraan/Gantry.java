@@ -4,7 +4,8 @@ package kraan;
  * Created by Wim on 27/04/2015.
  */
 public class Gantry {
-	private final int id;
+
+    private final int id;
     private final int xMin,xMax;
     private final int startX,startY;
     private final double xSpeed,ySpeed;
@@ -68,10 +69,4 @@ public class Gantry {
     public boolean canReachSlot(Slot s) {
         return xMin <= s.getCenterX() && s.getCenterY() <= xMax;
     }
-    
-    @Override
-	public String toString() {
-		return "Gantry [id=" + id + ", xMin=" + xMin + ", xMax=" + xMax + ", startX=" + startX + ", startY=" + startY
-				+ ", xSpeed=" + xSpeed + ", ySpeed=" + ySpeed + "]";
-	}
 }
