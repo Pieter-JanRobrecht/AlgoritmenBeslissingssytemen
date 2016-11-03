@@ -74,6 +74,7 @@ public class Slot {
     }
     
     public boolean isStorage() {
+        
     	if(this.type.toString().contains("STORAGE")) return true;
     	else return false;
     }
