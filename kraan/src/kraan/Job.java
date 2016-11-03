@@ -5,7 +5,8 @@ package kraan;
  * Created by Wim on 12/05/2015.
  */
 public class Job {
-	private int id;
+
+    private int id;
 
     private Task pickup = new Task(TaskType.PICKUP);
     private Task place = new Task(TaskType.DELIVERY);
@@ -63,11 +64,5 @@ public class Job {
         PICKUP,
         DELIVERY
     }
-    
-
-    @Override
-	public String toString() {
-		return "Job [id=" + id + ", pickup=" + pickup + ", place=" + place + ", item=" + item + "]";
-	}
 
 }

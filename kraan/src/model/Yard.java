@@ -99,7 +99,7 @@ public class Yard {
         this.height = probleem.getMaxLevels();
         this.width = probleem.getMaxY() / 10;
         this.length = probleem.getMaxX() / 10 - 1;
-        this.yard = new Slot[length + (length - 1) * width][height];
+		this.yard = new Slot[width*length + (length - 1) * width][height]; //KEK
         this.slotList = probleem.getSlots();
 
         if (debug)
