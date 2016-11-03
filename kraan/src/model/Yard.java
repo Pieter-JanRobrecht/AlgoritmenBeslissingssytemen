@@ -1,9 +1,12 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import controller.CSVUtils;
+import kraan.Gantry;
 import kraan.Item;
 import kraan.Job;
 import kraan.Problem;
@@ -11,6 +14,8 @@ import kraan.Slot;
 
 public class Yard {
 	private int width, length, height;
+	public static int [] csvparam1=new int [4];
+	
 	private Slot[][] yard;
 	private HashMap<Integer, Slot> itemIDList = new HashMap<Integer, Slot>();
 	private List<Slot> slotList;
@@ -18,10 +23,11 @@ public class Yard {
 	private List<Job> backlogOUT = new ArrayList<>();
 	private List<Job> backlogIN = new ArrayList<>();
 	private boolean debug = false;
-
+public List<Gantry> gantries;
 	public Yard(Problem probleem) {
 		System.out.println("Yard initiating..");
 		initializeYard(probleem);
+		gantries= probleem.getGantries();
 		System.out.println("Yard initiation done!");
 	}
 
@@ -177,6 +183,11 @@ public class Yard {
 				itemIDList.put(i.getId(), temp);
 				if(debug) System.out.println("DEBUG - We found a suiteable slot! Placing item " + i.toString() + " in "+ temp.toString());
 				found = true;
+				
+				//csv
+				 csvparam1[0]=gantries.get(0).getId(); csvparam1[1]=temp.getCenterX();csvparam1[2]= temp.getCenterY(); csvparam1[3]= temp.getItem().getId();
+				
+				
 				j = slotList.size() + 10;
 			}
 		}
@@ -190,14 +201,15 @@ public class Yard {
 			Slot core = itemIDList.get(i.getId());
 			if(core == null) {
 				if(debug) System.out.println("ERRORDEBUG - " + i.toString());
-			} else {
+			} else { 					csvparam1[0]=gantries.get(0).getId(); csvparam1[1]=core.getCenterX();csvparam1[2]= core.getCenterY(); csvparam1[3]= core.getItem().getId();
 				if (maakVrij(core)) {
 					// mogen nu vrij bewegen!
 					succes = true;
+
 					//itemIDList.remove(core.getItem().getId());
 					core.setItem(null); // --> zogezegd naar eindslot gemoved en
 										// verwijdert uit yard
-
+					
 				}
 			}
 		return succes;
