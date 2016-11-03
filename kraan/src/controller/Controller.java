@@ -43,7 +43,7 @@ public class Controller extends Observable {
 
         if (klok == 0) {
             try {
-                File hulp = new File(Main.class.getClassLoader().getResource("test.csv").toURI());
+                File hulp = new File(Main.class.getClassLoader().getResource("KRAANOPDRACHT1_Groep_Groep3.csv").toURI());
                 writer = new FileWriter(hulp);
             } catch (URISyntaxException e) {
                 e.printStackTrace();
