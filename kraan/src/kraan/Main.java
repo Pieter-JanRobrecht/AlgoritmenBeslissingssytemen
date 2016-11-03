@@ -1,24 +1,49 @@
 package kraan;
 
+import controller.Controller;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import model.Yard;
+import view.View;
+
 import java.io.File;
-import java.io.FileReader;
-import java.net.URL;
+import java.io.IOException;
 
-public class Main {
+public class Main extends Application {
 
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		 
+    public static void main(String[] args) {
+        launch(args);
+    }
+
+    @Override
+    public void start(Stage primaryStage) {
         try {
-        	File file = new File("./data/1_50_50_10_FALSE_60_25_100.json");
+            //Laden van de fxml file waarin alle gui elementen zitten
+            FXMLLoader loader = new FXMLLoader();
+            Parent root = (Parent) loader.load(getClass().getClassLoader().getResource("Sample.fxml").openStream());
 
-        	
-        	Problem uwProbleem = Problem.fromJson(file);
- 
-        	System.out.println(uwProbleem.toString());
-        } catch (Exception e) {
+            //Setten van enkele elementen van het hoofdscherm
+            primaryStage.setTitle("Kranen probleem");
+            primaryStage.setScene(new Scene(root));
+            primaryStage.show();
+
+            //Ophalen van de controller horende bij de view klasse
+            View viewController = loader.<View>getController() ;
+            assert(viewController != null);
+
+            Controller controller = new Controller();
+
+            //Link tussen controller en view
+            viewController.setController(controller);
+            controller.addObserver(viewController);
+            controller.setFileSmall();
+            viewController.initField();
+
+        } catch (IOException e) {
             e.printStackTrace();
         }
-	}
-
+    }
 }
