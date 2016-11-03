@@ -19,7 +19,7 @@ import kraan.Slot;
 
 public class Yard {
 	private int width, length, height;
-	public static int[] csvparam1 = new int[4];
+	public static int[] csvparam1 = new int[5];
 	public int clock;
 	public Gantry gantry;
 	public int pickUpPlaceDuration;
@@ -35,14 +35,16 @@ public class Yard {
 	private FileWriter writer;
 
 	public Yard(Problem probleem) {
-		gantry = gantries.get(0);
-		clock = 0;
-		pickUpPlaceDuration = probleem.getPickupPlaceDuration();
+
 
 		System.out.println("Yard initiating..");
 		initializeYard(probleem);
 		gantries = probleem.getGantries();
 		System.out.println("Yard initiation done!");
+
+        gantry = gantries.get(0);
+        clock = 0;
+        pickUpPlaceDuration = probleem.getPickupPlaceDuration();
 
 		try {
 			File hulp = new File(Main.class.getClassLoader().getResource("KRAANOPDRACHT1_Groep_Groep3.csv").toURI());
