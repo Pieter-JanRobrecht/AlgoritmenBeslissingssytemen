@@ -243,6 +243,7 @@ public class View implements Observer {
             showLevel(level);
         } catch (Exception e) {
             //Hier moet er toch niks gebeuren.
+            //FU RHINO VOOR ALLES TE FUCKEN
         }
     }
 }
