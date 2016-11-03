@@ -11,6 +11,8 @@ import view.View;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.stream.Stream;
 
 public class Main extends Application {
 
@@ -23,7 +25,13 @@ public class Main extends Application {
         try {
             //Laden van de fxml file waarin alle gui elementen zitten
             FXMLLoader loader = new FXMLLoader();
-            Parent root = (Parent) loader.load(getClass().getClassLoader().getResource("Sample.fxml").openStream());
+			InputStream s = null;
+			try{
+				s = getClass().getClassLoader().getResource("Sample.fxml").openStream();
+			}catch(Exception e){
+				s = getClass().getClassLoader().getResource("./data/Sample.fxml").openStream();
+			}
+            Parent root = (Parent) loader.load(s);
 
             //Setten van enkele elementen van het hoofdscherm
             primaryStage.setTitle("Kranen probleem");
