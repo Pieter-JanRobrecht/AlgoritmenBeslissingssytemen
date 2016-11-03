@@ -71,27 +71,11 @@ public class Controller extends Observable {
         if (notify) {
             setChanged();
             notifyObservers();
-
-
         }
 
         if (klok >= inLimit && klok >= outLimit) {
             writer.close();
         }
-
-
-        //TODO back log moet vervangen worden met code
-//        System.out.println("Done!");
-//        System.out.println("Tasks in backlog IN (" + y.getBacklogIN().size() + "): " + y.getBacklogIN().toString());
-//        System.out.println("Tasks in backlog OUT (" + y.getBacklogOUT().size() + "): " + y.getBacklogOUT().toString());
-//        System.out.println("\n\n\n\n");
-//        for (Job j : y.getBacklogIN()) {
-//            y.executeJob(j, "INPUT");
-//        }
-//
-//        for (Job j : y.getBacklogOUT()) {
-//            y.executeJob(j, "OUTPUT");
-//        }
     }
 
     public void reset() {

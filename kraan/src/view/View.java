@@ -69,11 +69,12 @@ public class View implements Observer {
                     .title("ERROR")
                     .text("It's number of steps, not string of steps")
                     .showWarning();
-        } catch (Exception ex){
-            int max = controller.getLimit()-controller.getKlok();
+        } catch (Exception ex) {
+            int max = controller.getLimit() - controller.getKlok();
+            System.out.println(ex.getMessage());
             Notifications.create()
                     .title("ERROR")
-                    .text("Amount of steps is too big, maximum allowed is: "+ max)
+                    .text("Amount of steps is too big, maximum allowed is: " + max)
                     .showWarning();
         }
     }
@@ -186,9 +187,9 @@ public class View implements Observer {
         int cx = 0;
         int cy = 0;
 
-        for(int i=0;i<yard.length;i++){
+        for (int i = 0; i < yard.length; i++) {
             Slot slot = yard[i][level];
-            if( slot.getItem() != null){
+            if (slot.getItem() != null) {
                 cx = slot.getCenterX() / 5;
                 cy = slot.getCenterY() / 5;
             }
@@ -235,13 +236,14 @@ public class View implements Observer {
     @Override
     public void update(Observable o, Object arg) {
         //TODO voor stukken up te daten
-        String output = dropDown.getSelectionModel().getSelectedItem().toString();
         try {
+            String output = dropDown.getSelectionModel().getSelectedItem().toString();
             int level = Integer.parseInt(output.split(" ")[1]);
 
             showLevel(level);
-        }catch (NumberFormatException e){
+        } catch (Exception e) {
             //Hier moet er toch niks gebeuren.
+            //FU RHINO VOOR ALLES TE FUCKEN
         }
     }
 }
