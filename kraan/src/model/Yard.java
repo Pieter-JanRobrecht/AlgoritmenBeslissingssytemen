@@ -19,7 +19,7 @@ import kraan.Slot;
 
 public class Yard {
 	private int width, length, height;
-	public static int[] csvparam1 = new int[4];
+	public static int[] csvparam1 = new int[5];
 	public int clock;
 	public Gantry gantry;
 	public int pickUpPlaceDuration;
@@ -279,8 +279,7 @@ public class Yard {
 				// mogen nu vrij bewegen!
 				succes = true;
 				// itemIDList.remove(core.getItem().getId());
-				core.setItem(null); // --> zogezegd naar eindslot gemoved en
-				// verwijdert uit yard
+
 				
 				// Begin positie van gantry
 				int x = gantry.getStartX();
@@ -314,6 +313,9 @@ public class Yard {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+
+                core.setItem(null); // --> zogezegd naar eindslot gemoved en
+                // verwijdert uit yard
 			}
 		}
 		return succes;
@@ -371,7 +373,7 @@ public class Yard {
 				} else {
 					vrij = false;
 					if (s.getZ() + 1 == height || maakVrijBoven(yard[yCoords * length + xCoords][s.getZ() + 1])) {
-						yard[yCoords * length + xCoords][s.getZ()].setItem(null);
+//						yard[yCoords * length + xCoords][s.getZ()].setItem(null);
 						return true;
 					}
 				}

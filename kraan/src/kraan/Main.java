@@ -29,7 +29,7 @@ public class Main extends Application {
 			try{
 				s = getClass().getClassLoader().getResource("Sample.fxml").openStream();
 			}catch(Exception e){
-				s = getClass().getClassLoader().getResource("./data/Sample.fxml").openStream();
+
 			}
             Parent root = (Parent) loader.load(s);
 
