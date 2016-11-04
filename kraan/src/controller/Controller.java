@@ -172,4 +172,12 @@ public class Controller extends Observable {
 	public Yard getYard() {
 		return yard;
 	}
+
+	public int getInLimit() {
+		return inLimit;
+	}
+
+	public int getOutLimit() {
+		return outLimit;
+	}
 }

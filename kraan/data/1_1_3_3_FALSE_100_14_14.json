@@ -1,0 +1,260 @@
+{
+  "parameters": {
+    "gantrySafetyDistance": 10,
+    "maxLevels": 3,
+    "pickupPlaceDuration": 10
+  },
+  "items": [
+    {
+      "id": 0
+    },
+    {
+      "id": 1
+    },
+    {
+      "id": 2
+    },
+    {
+      "id": 3
+    },
+    {
+      "id": 4
+    },
+    {
+      "id": 5
+    },
+    {
+      "id": 6
+    },
+    {
+      "id": 7
+    },
+    {
+      "id": 8
+    },
+    {
+      "id": 9
+    },
+    {
+      "id": 10
+    },
+    {
+      "id": 11
+    },
+    {
+      "id": 12
+    },
+    {
+      "id": 13
+    },
+    {
+      "id": 14
+    },
+    {
+      "id": 15
+    }
+  ],
+  "slots": [
+    {
+      "id": 0,
+      "cx": 5,
+      "cy": 5,
+      "minX": 0,
+      "maxX": 10,
+      "minY": 0,
+      "maxY": 10,
+      "z": 0,
+      "type": "STORAGE",
+      "itemId": 0
+    },
+    {
+      "id": 1,
+      "cx": 15,
+      "cy": 5,
+      "minX": 10,
+      "maxX": 20,
+      "minY": 0,
+      "maxY": 10,
+      "z": 0,
+      "type": "STORAGE",
+      "itemId": 1
+    },
+    {
+      "id": 2,
+      "cx": 25,
+      "cy": 5,
+      "minX": 20,
+      "maxX": 30,
+      "minY": 0,
+      "maxY": 10,
+      "z": 0,
+      "type": "STORAGE",
+      "itemId": 2
+    },
+    {
+      "id": 3,
+      "cx": 5,
+      "cy": 5,
+      "minX": 0,
+      "maxX": 10,
+      "minY": 0,
+      "maxY": 10,
+      "z": 1,
+      "type": "STORAGE",
+      "itemId": 3
+    },
+    {
+      "id": 4,
+      "cx": 15,
+      "cy": 5,
+      "minX": 10,
+      "maxX": 20,
+      "minY": 0,
+      "maxY": 10,
+      "z": 1,
+      "type": "STORAGE",
+      "itemId": 4
+    },
+    {
+      "id": 5,
+      "cx": 25,
+      "cy": 5,
+      "minX": 20,
+      "maxX": 30,
+      "minY": 0,
+      "maxY": 10,
+      "z": 1,
+      "type": "STORAGE",
+      "itemId": 5
+    },
+    {
+      "id": 6,
+      "cx": 5,
+      "cy": 5,
+      "minX": 0,
+      "maxX": 10,
+      "minY": 0,
+      "maxY": 10,
+      "z": 2,
+      "type": "STORAGE",
+      "itemId": 6
+    },
+    {
+      "id": 7,
+      "cx": 15,
+      "cy": 5,
+      "minX": 10,
+      "maxX": 20,
+      "minY": 0,
+      "maxY": 10,
+      "z": 2,
+      "type": "STORAGE",
+      "itemId": 7
+    },
+    {
+      "id": 8,
+      "cx": 25,
+      "cy": 5,
+      "minX": 20,
+      "maxX": 30,
+      "minY": 0,
+      "maxY": 10,
+      "z": 2,
+      "type": "STORAGE",
+      "itemId": 8
+    },
+    {
+      "id": 9,
+      "cx": -5,
+      "cy": 5,
+      "minX": -10,
+      "maxX": 0,
+      "minY": 0,
+      "maxY": 10,
+      "z": 0,
+      "type": "INPUT"
+    },
+    {
+      "id": 10,
+      "cx": 35,
+      "cy": 5,
+      "minX": 30,
+      "maxX": 40,
+      "minY": 0,
+      "maxY": 10,
+      "z": 0,
+      "type": "OUTPUT"
+    }
+  ],
+  "gantries": [
+    {
+      "id": 0,
+      "xMin": -10,
+      "xMax": 40,
+      "startX": -5,
+      "startY": 5,
+      "xSpeed": 5.0,
+      "ySpeed": 10.0
+    }
+  ],
+  "inputSequence": [
+    {
+      "itemId": 9,
+      "fromId": 9
+    },
+    {
+      "itemId": 15,
+      "fromId": 9
+    },
+    {
+      "itemId": 10,
+      "fromId": 9
+    },
+    {
+      "itemId": 11,
+      "fromId": 9
+    },
+    {
+      "itemId": 12,
+      "fromId": 9
+    },
+    {
+      "itemId": 13,
+      "fromId": 9
+    },
+    {
+      "itemId": 14,
+      "fromId": 9
+    }
+  ],
+  "outputSequence": [
+    {
+      "itemId": 9,
+      "toId": 10
+    },
+    {
+      "itemId": 6,
+      "toId": 10
+    },
+    {
+      "itemId": 4,
+      "toId": 10
+    },
+    {
+      "itemId": 7,
+      "toId": 10
+    },
+    {
+      "itemId": 1,
+      "toId": 10
+    },
+    {
+      "itemId": 15,
+      "toId": 10
+    },
+    {
+      "itemId": 5,
+      "toId": 10
+    }
+  ]
+}

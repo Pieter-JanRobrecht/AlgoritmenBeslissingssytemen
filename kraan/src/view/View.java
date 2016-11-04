@@ -81,10 +81,23 @@ public class View implements Observer {
 
     @FXML
     void doComplete(ActionEvent event) throws IOException {
-        for (int i = 0; i < controller.getLimit() - 1; i++) {
+        int klokIn = controller.getKlokIN();
+        int klokOut = controller.getKlokOUT();
+        int limitIn = controller.getInLimit();
+        int limitOut = controller.getOutLimit();
+        while (klokIn < limitIn || klokOut < limitOut){
             controller.doStep(false);
+
+            klokIn = controller.getKlokIN();
+            klokOut = controller.getKlokOUT();
+            limitIn = controller.getInLimit();
+            limitOut = controller.getOutLimit();
         }
         controller.doStep(true);
+//        for (int i = 0; i < controller.getLimit() - 1; i++) {
+//            controller.doStep(false);
+//        }
+//        controller.doStep(true);
     }
 
     public void initField() {
