@@ -38,9 +38,9 @@ public class Yard {
 		System.out.println("Yard initiating..");
 		initializeYard(probleem);
 		gantries = probleem.getGantries();
-		
+
 		initWriter(probleem);
-		
+
 		for (int i = 0; i < probleem.getSlots().size(); i++) {
 			Slot s = probleem.getSlots().get(i);
 			if (Math.floor(s.getXMin() / 10) != s.getXMin() / 10) {
@@ -52,30 +52,11 @@ public class Yard {
 				i = probleem.getSlots().size();
 		}
 
+		if (staggered)
+			fillSideContainers(probleem);
+
 		System.out.println("Yard initiation done!");
 	}
-	
-    private void initWriter(Problem probleem) {
-        try {
-            clock = 0;
-            pickUpPlaceDuration = probleem.getPickupPlaceDuration();
-            gantry = gantries.get(0);
-
-            File hulp = new File(Main.class.getClassLoader().getResource("KRAANOPDRACHT1_Groep_Groep3.csv").toURI());
-            writer = new FileWriter(hulp);
-            CSVUtils.writeLine(writer, Arrays.asList("gID", "T", "x", "y", "itemInCraneID"));
-            writer.flush();
-            for (int i = 0; i < gantries.size(); i++) {
-                CSVUtils.writeLine(writer, Arrays.asList(gantries.get(i).getId() + "", clock + "", gantries.get(i).getStartX() + "", gantries.get(i).getStartY() + "", "null"));
-                writer.flush();
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-    }
 
 	public int getWidth() {
 		return width;
@@ -146,29 +127,30 @@ public class Yard {
 
 		for (Slot s : probleem.getSlots()) {
 			// Slot in Yard plaatsen
-			// yard[s.getId()%(length*width)][s.getId()/(length*width)] = s; -->
-			// don't be drunk rhino ._.
-
 			if (s.isStorage()) {
 				int xCoords = s.getCenterX() / 10;
 				int yCoords = s.getCenterY() / 10;
 
-				// detect if staggered...
-				// System.out.println("DEBUG - " + s.getXMin() + " | "+
-				// Math.floor(s.getXMin() / 10) + " | "+ s.getXMin() / 10);
-				if (Math.floor(s.getXMin() / 10) != s.getXMin() / 10) {
-					// ([yCoords*length+xCoords]-yCoords) ZIE EXCEL
-					// if(debug) System.out.println("DEBUG (STAGGERED) - [" +
-					// (width * length + yCoords * (length - 1) + xCoords)
-					// + "] || [" + s.getZ() + "]");
-					yard[(width * length - 1) + (yCoords * (length - 1) + (xCoords + 1))][s.getZ()] = s;
+				if (staggered) {
+					
+					if (s.getZ() % 2 == 0) {
+						if (debug)
+							System.out.println("DEBUG - maakVrij op een EVEN (NON STAGGERED, STAGGERED)");
+						// even (0 ook even) ==> NOT STAGGERED
+						yard[yCoords * length + xCoords][s.getZ()] = s;
+						
+					} else {
+						if (debug)
+							System.out.println("DEBUG - maakVrij op een ONEVEN (STAGGERED, STAGGERED)");
+						// oneven ==> STAGGERED
+						yard[width * length + (yCoords * length + xCoords - yCoords)][s.getZ()] = s;
+						
+					}
+					
+					
 					if (s.getItem() != null)
 						itemIDList.put(s.getItem().getId(), s);
 				} else { // not staggered
-					// if(debug) System.out.println("DEBUG - [ yCoord: " +
-					// yCoords + " xCoords: " + xCoords + " -> "
-					// + (yCoords * length + xCoords) + "] || [" + s.getZ() +
-					// "]");
 					yard[yCoords * length + xCoords][s.getZ()] = s;
 					if (s.getItem() != null)
 						itemIDList.put(s.getItem().getId(), s);
@@ -178,6 +160,51 @@ public class Yard {
 			} else { // outputslot
 				outputSlot = s;
 			}
+		}
+	}
+
+	private void fillSideContainers(Problem probleem) {
+		for (Slot s : probleem.getSlots()) {
+			if (s.getZ() % 2 == 0) {
+				// even (0 ook even) ==> NOT STAGGERED
+				int verlies = s.getZ() / 2;
+				if (s.getXMax() / 10 < verlies || s.getXMin() / 10 > (length - verlies)) {
+					s.setItem(new Item(-1));
+					if (debug)
+						System.out.println("DEBUG - disabling slot (z=" + s.getZ() + "): " + s.toString());
+				}
+			} else {
+				// oneven ==> STAGGERED
+				int verlies = s.getZ() / 2;
+				if (s.getXMax() / 10 < verlies || s.getXMin() / 10 > (length - verlies)) {
+					s.setItem(new Item(-1));
+					if (debug)
+						System.out.println("DEBUG - disabling slot (z=" + s.getZ() + "): " + s.toString());
+				}
+			}
+		}
+	}
+
+	private void initWriter(Problem probleem) {
+		try {
+			clock = 0;
+			pickUpPlaceDuration = probleem.getPickupPlaceDuration();
+			gantry = gantries.get(0);
+
+			File hulp = new File(Main.class.getClassLoader().getResource("KRAANOPDRACHT1_Groep_Groep3.csv").toURI());
+			writer = new FileWriter(hulp);
+			CSVUtils.writeLine(writer, Arrays.asList("gID", "T", "x", "y", "itemInCraneID"));
+			writer.flush();
+			for (int i = 0; i < gantries.size(); i++) {
+				CSVUtils.writeLine(writer, Arrays.asList(gantries.get(i).getId() + "", clock + "",
+						gantries.get(i).getStartX() + "", gantries.get(i).getStartY() + "", "null"));
+				writer.flush();
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -220,10 +247,10 @@ public class Yard {
 	public boolean addItem(Item i) {
 		boolean found = false;
 
-        //Beweeg naar ingang
-        writeMove(inputSlot, gantry, null);
-        writePickUp(inputSlot, gantry, i.getId());
-        
+		// Beweeg naar ingang
+		writeMove(inputSlot, gantry, null);
+		writePickUp(inputSlot, gantry, i.getId());
+
 		for (int j = 0; j < slotList.size(); j++) {
 			Slot temp = slotList.get(j);
 			if (temp.getItem() == null) {
@@ -235,8 +262,8 @@ public class Yard {
 							+ temp.toString());
 				found = true;
 
-                writeMove(temp, gantry, temp.getItem().getId());
-                writePlacement(temp, gantry);
+				writeMove(temp, gantry, temp.getItem().getId());
+				writePlacement(temp, gantry);
 
 				j = slotList.size() + 10;
 			}
@@ -254,15 +281,17 @@ public class Yard {
 			if (debug)
 				System.out.println("ERRORDEBUG - " + i.toString());
 		} else {
+			if (debug)
+				System.out.println("DEBUG - Slot info where item is stored: " + core.toString());
 			if (maakVrij(core)) {
 				// mogen nu vrij bewegen!
 				succes = true;
 				// itemIDList.remove(core.getItem().getId());
 
-                writeMove(core, gantry, null);
-                writePickUp(core, gantry, i.getId());
-                writeMove(outputSlot, gantry, i.getId());
-                writePlacement(outputSlot,gantry);
+				writeMove(core, gantry, null);
+				writePickUp(core, gantry, i.getId());
+				writeMove(outputSlot, gantry, i.getId());
+				writePlacement(outputSlot, gantry);
 
 				core.setItem(null); // --> zogezegd naar eindslot gemoved en
 				// verwijdert uit yard
@@ -280,16 +309,13 @@ public class Yard {
 			int yCoords = s.getCenterY() / 10;
 
 			if (staggered) {
-				// staggered - WERKT NOG NIET HEHEXD
+				// staggered
 				if (debug)
 					System.out.println("DEBUG - STAGGERED");
-				if (debug)
-					System.out.print("DEBUG - yCoords: " + yCoords + " xCoords: " + xCoords + " -> "
-							+ ((xCoords - 1) + (yCoords * length)) + " Z level: " + (s.getZ() + 1) + " || ");
-				if (debug)
-					System.out.println((yard[(xCoords - 1) + (yCoords * length)][s.getZ()].getItem() == null));
 
 				if (s.getZ() % 2 == 0) {
+					if (debug)
+						System.out.println("DEBUG - maakVrij op een EVEN (NON STAGGERED, STAGGERED)");
 					// even (0 ook even) ==> NOT STAGGERED
 					if (s.getZ() + 1 < height) {
 						vrij = false;
@@ -297,76 +323,43 @@ public class Yard {
 							// enkel links kijken
 							if (maakVrijBoven(
 									yard[width * length + (yCoords * length + xCoords - yCoords)][s.getZ() + 1])) {
-								s.setItem(null);
 								vrij = true;
 							}
 						} else if (xCoords == 0) {
 							// enkel rechts kijken
-							if (maakVrijBoven(
-									yard[width * length + (yCoords * length + (xCoords + 1) - yCoords)][s.getZ()
-											+ 1])) {
-								s.setItem(null);
+							if (maakVrijBoven(yard[width * length + (yCoords * length + 1 - yCoords)][s.getZ() + 1])) {
 								vrij = true;
 							}
 						} else {
 							// 2 kanten
 							if (maakVrijBoven(
-									yard[width * length + (yCoords * length + xCoords - yCoords)][s.getZ() + 1])) {
+									yard[width * length + (yCoords * length + xCoords - yCoords)][s.getZ() + 1])
+									&& maakVrijBoven(
+											yard[width * length + (yCoords * length + (xCoords + 1) - yCoords)][s.getZ()
+													+ 1])) {
 								vrij = true;
 							}
-							if (maakVrijBoven(
-									yard[width * length + (yCoords * length + (xCoords + 1) - yCoords)][s.getZ()
-											+ 1])) {
-								vrij = true;
-							}
-							if (vrij)
-								s.setItem(null);
 						}
 
 					} else {
 						return true;
 					}
 				} else {
+					if (debug)
+						System.out.println("DEBUG - maakVrij op een ONEVEN (STAGGERED, STAGGERED)");
 					// oneven ==> STAGGERED
 					if (s.getZ() + 1 < height) {
 						vrij = false;
 
 						// altijd 2 kanten ;-;
-						if (maakVrijBoven(yard[yCoords * length + xCoords][s.getZ()+1])) {
+						if (maakVrijBoven(yard[yCoords * length + xCoords][s.getZ() + 1])
+								&& maakVrijBoven(yard[yCoords * length + xCoords - 1][s.getZ() + 1])) {
 							vrij = true;
 						}
-						if (maakVrijBoven(yard[yCoords * length + (xCoords-1)][s.getZ()+1])) {
-							vrij = true;
-						}
-						if (vrij)
-							s.setItem(null);
-
 					} else {
 						return true;
 					}
 				}
-
-				/*
-				 * if (yard[(xCoords - 1) + (yCoords *
-				 * length)][s.getZ()].getItem() == null) { vrij = true; } else {
-				 * vrij = false; if (s.getZ() + 1 == height ||
-				 * maakVrijBoven(yard[(xCoords - 1) + (yCoords *
-				 * length)][s.getZ()])) { yard[(xCoords - 1) + (yCoords *
-				 * length)][s.getZ()].setItem(null); return true; } }
-				 * 
-				 * if (yard[(xCoords - 1) + (yCoords * length) + 1][s.getZ()] ==
-				 * null) { vrij = true; } else { vrij = false; if (s.getZ() + 1
-				 * == height || maakVrijBoven(yard[(xCoords - 1) + (yCoords *
-				 * length) + 1][s.getZ()])) { yard[(xCoords - 1) + (yCoords *
-				 * length) + 1][s.getZ()].setItem(null); return true; } }
-				 * 
-				 * if (vrij) return true;
-				 */
-
-				if (vrij)
-					return true;
-				else
-					return false;
 			} else { // not staggered
 				if (debug)
 					System.out.print("DEBUG - yCoords: " + yCoords + " xCoords: " + xCoords + " -> "
@@ -380,8 +373,6 @@ public class Yard {
 					vrij = false;
 
 					if (s.getZ() + 1 == height || maakVrijBoven(yard[yCoords * length + xCoords][s.getZ() + 1])) {
-						// yard[yCoords * length +
-						// xCoords][s.getZ()].setItem(null);
 						return true;
 					}
 				}
@@ -400,41 +391,79 @@ public class Yard {
 			int yCoords = s.getCenterY() / 10;
 
 			if (staggered) {
-				// staggered- WERKT NOG NIET HEHEXD
+				// staggered
 				if (debug)
 					System.out.println("DEBUG - STAGGERED");
-				if (debug)
-					System.out.print("DEBUG - yCoords: " + yCoords + " xCoords: " + xCoords + " -> "
-							+ ((xCoords - 1) + (yCoords * length)) + " Z level: " + (s.getZ() + 1) + " || ");
-				if (debug)
-					System.out.println((yard[(xCoords - 1) + (yCoords * length)][s.getZ()].getItem() == null));
 
-				if (yard[(xCoords - 1) + (yCoords * length)][s.getZ()].getItem() == null) {
-					vrij = true;
-				} else {
-					vrij = false;
-					if (s.getZ() + 1 == height
-							|| maakVrijBoven(yard[(xCoords - 1) + (yCoords * length)][s.getZ() + 1])) {
-						if (moveItem(yard[(xCoords - 1) + (yCoords * length)][s.getZ()]))
-							s.setItem(null);
-						return true;
-					}
-				}
-
-				if (yard[(xCoords - 1) + (yCoords * length) + 1][s.getZ()].getItem() == null) {
-					vrij = true;
-				} else {
-					vrij = false;
-					if (s.getZ() + 1 == height
-							|| maakVrij(yard[(xCoords - 1) + (yCoords * length) + 1][s.getZ() + 1])) {
-						if (moveItem(yard[(xCoords - 1) + (yCoords * length) + 1][s.getZ()]))
-							s.setItem(null);
-						return true;
-					}
-				}
-
-				if (vrij)
+				if (s.getItem() == null || s.getItem().getId() == -1) {
 					return true;
+				} else {
+					if (debug)
+						System.out.println("DEBUG - Trying to empty slot " + s.toString());
+
+					if (s.getZ() % 2 == 0) {
+						if (debug)
+							System.out.println("DEBUG - maakVrij op een EVEN (NON STAGGERED, STAGGERED)");
+						// even (0 ook even) ==> NOT STAGGERED
+						if (s.getZ() + 1 < height) {
+							vrij = false;
+							if (xCoords + 1 == length) {
+								// enkel links kijken
+								if (maakVrijBoven(
+										yard[width * length + (yCoords * length + xCoords - yCoords)][s.getZ() + 1])) {
+									if (moveItem(s)) {
+										s.setItem(null);
+										vrij = true;
+									}
+								}
+							} else if (xCoords == 0) {
+								// enkel rechts kijken
+								if (maakVrijBoven(
+										yard[width * length + (yCoords * length + 1 - yCoords)][s.getZ() + 1])) {
+									if (moveItem(s)) {
+										s.setItem(null);
+										vrij = true;
+									}
+								}
+							} else {
+								// 2 kanten
+								if (maakVrijBoven(
+										yard[width * length + (yCoords * length + xCoords - yCoords)][s.getZ() + 1])
+										&& maakVrijBoven(yard[width * length
+												+ (yCoords * length + (xCoords + 1) - yCoords)][s.getZ() + 1])) {
+									if (moveItem(s)) {
+										s.setItem(null);
+										vrij = true;
+									}
+								}
+
+							}
+
+						} else {
+							return true;
+						}
+					} else {
+						if (debug)
+							System.out.println("DEBUG - maakVrij op een ONEVEN (STAGGERED, STAGGERED)");
+						// oneven ==> STAGGERED
+						if (s.getZ() + 1 < height) {
+							vrij = false;
+
+							// altijd 2 kanten ;-;
+							if (maakVrijBoven(yard[yCoords * length + xCoords][s.getZ() + 1])
+									&& maakVrijBoven(yard[yCoords * length + xCoords - 1][s.getZ() + 1])) {
+								if (moveItem(s)) {
+									s.setItem(null);
+									vrij = true;
+								}
+							}
+
+						} else {
+							return true;
+						}
+					}
+
+				}
 			} else { // not staggered
 				if (debug)
 					System.out.print("DEBUG - yCoords: " + yCoords + " xCoords: " + xCoords + " -> "
@@ -447,7 +476,7 @@ public class Yard {
 				} else {
 					vrij = false;
 					if (s.getZ() + 1 == height || maakVrijBoven(yard[yCoords * length + xCoords][s.getZ() + 1])) {
-						if (moveItem(yard[yCoords * length + xCoords][s.getZ()]))
+						if (moveItem(s))
 							s.setItem(null);
 						return true;
 					}
@@ -463,9 +492,9 @@ public class Yard {
 			System.out.println("DEBUG - Moving item (" + s.getItem().getId() + ")");
 		boolean succes = false;
 
-        writeMove(s,gantry,null);
-        writePickUp(s,gantry,s.getItem().getId());
-        
+		writeMove(s, gantry, null);
+		writePickUp(s, gantry, s.getItem().getId());
+
 		for (int j = 0; j < slotList.size(); j++) {
 			Slot temp = slotList.get(j);
 			if (temp.getItem() == null) {
@@ -476,8 +505,8 @@ public class Yard {
 				if (debug)
 					System.out.println("DEBUG - We found a suiteable slot! " + temp.toString());
 
-                writeMove(temp, gantry, s.getItem().getId());
-                writePlacement(temp,gantry);
+				writeMove(temp, gantry, s.getItem().getId());
+				writePlacement(temp, gantry);
 			}
 		}
 		return succes;
@@ -515,78 +544,76 @@ public class Yard {
 			System.out.println("Hash id:" + id + "\t Slot id:" + slot + "\t Container id:" + container);
 		}
 	}
-	
-    private void writePlacement(Slot temp, Gantry gantry) {
-        clock+= pickUpPlaceDuration;
 
-        // csv
-        csvparam1[0] = gantry.getId();
-        csvparam1[1] = temp.getCenterX();
-        csvparam1[2] = temp.getCenterY();
-        csvparam1[3] = -1;
-        csvparam1[4] = clock;
+	private void writePlacement(Slot temp, Gantry gantry) {
+		clock += pickUpPlaceDuration;
 
-        try {
-            CSVUtils.writeLine(writer, Arrays.asList("" + Yard.csvparam1[0], "" + Yard.csvparam1[4],
-                    "" + Yard.csvparam1[1], "" + Yard.csvparam1[2], "" + "null"));
-            writer.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+		// csv
+		csvparam1[0] = gantry.getId();
+		csvparam1[1] = temp.getCenterX();
+		csvparam1[2] = temp.getCenterY();
+		csvparam1[3] = -1;
+		csvparam1[4] = clock;
 
-    private void writePickUp(Slot temp, Gantry gantry, Integer itemId) {
-        clock+= pickUpPlaceDuration;
+		try {
+			CSVUtils.writeLine(writer, Arrays.asList("" + Yard.csvparam1[0], "" + Yard.csvparam1[4],
+					"" + Yard.csvparam1[1], "" + Yard.csvparam1[2], "" + "null"));
+			writer.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
-        // csv
-        csvparam1[0] = gantry.getId();
-        csvparam1[1] = temp.getCenterX();
-        csvparam1[2] = temp.getCenterY();
-        csvparam1[3] = itemId;
-        csvparam1[4] = clock;
+	private void writePickUp(Slot temp, Gantry gantry, Integer itemId) {
+		clock += pickUpPlaceDuration;
 
-        try {
-            CSVUtils.writeLine(writer, Arrays.asList("" + Yard.csvparam1[0], "" + Yard.csvparam1[4],
-                    "" + Yard.csvparam1[1], "" + Yard.csvparam1[2], "" + Yard.csvparam1[3]));
-            writer.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+		// csv
+		csvparam1[0] = gantry.getId();
+		csvparam1[1] = temp.getCenterX();
+		csvparam1[2] = temp.getCenterY();
+		csvparam1[3] = itemId;
+		csvparam1[4] = clock;
 
-    private void writeMove(Slot temp, Gantry gantry, Integer itemId) {
-        double bewegingstijd = Math.max(
-                (Math.abs(temp.getCenterX())+Math.abs(gantry.getStartX()))/(gantry.getXSpeed())
-                ,
-                (Math.abs(temp.getCenterY())+Math.abs(gantry.getStartY()))/(gantry.getYSpeed())
-        );
+		try {
+			CSVUtils.writeLine(writer, Arrays.asList("" + Yard.csvparam1[0], "" + Yard.csvparam1[4],
+					"" + Yard.csvparam1[1], "" + Yard.csvparam1[2], "" + Yard.csvparam1[3]));
+			writer.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
-        clock+=bewegingstijd;
-        gantry.setStartX(temp.getCenterX());
-        gantry.setStartY(temp.getCenterY());
+	private void writeMove(Slot temp, Gantry gantry, Integer itemId) {
+		double bewegingstijd = Math.max(
+				(Math.abs(temp.getCenterX()) + Math.abs(gantry.getStartX())) / (gantry.getXSpeed()),
+				(Math.abs(temp.getCenterY()) + Math.abs(gantry.getStartY())) / (gantry.getYSpeed()));
 
-        // csv
-        csvparam1[0] = gantry.getId();
-        csvparam1[1] = temp.getCenterX();
-        csvparam1[2] = temp.getCenterY();
-        if(itemId != null) {
-            csvparam1[3] = itemId;
-        }
-        csvparam1[4] = clock;
+		clock += bewegingstijd;
+		gantry.setStartX(temp.getCenterX());
+		gantry.setStartY(temp.getCenterY());
 
-        try {
-            if(itemId != null) {
-                CSVUtils.writeLine(writer, Arrays.asList("" + Yard.csvparam1[0], "" + Yard.csvparam1[4],
-                        "" + Yard.csvparam1[1], "" + Yard.csvparam1[2], "" + Yard.csvparam1[3]));
-                writer.flush();
-            }else{
-                CSVUtils.writeLine(writer, Arrays.asList("" + Yard.csvparam1[0], "" + Yard.csvparam1[4],
-                        "" + Yard.csvparam1[1], "" + Yard.csvparam1[2], "" + "null"));
-                writer.flush();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+		// csv
+		csvparam1[0] = gantry.getId();
+		csvparam1[1] = temp.getCenterX();
+		csvparam1[2] = temp.getCenterY();
+		if (itemId != null) {
+			csvparam1[3] = itemId;
+		}
+		csvparam1[4] = clock;
+
+		try {
+			if (itemId != null) {
+				CSVUtils.writeLine(writer, Arrays.asList("" + Yard.csvparam1[0], "" + Yard.csvparam1[4],
+						"" + Yard.csvparam1[1], "" + Yard.csvparam1[2], "" + Yard.csvparam1[3]));
+				writer.flush();
+			} else {
+				CSVUtils.writeLine(writer, Arrays.asList("" + Yard.csvparam1[0], "" + Yard.csvparam1[4],
+						"" + Yard.csvparam1[1], "" + Yard.csvparam1[2], "" + "null"));
+				writer.flush();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 }
