@@ -140,6 +140,7 @@ public class View implements Observer {
                 }
             }
         });
+        dropDown.getSelectionModel().select(0);
     }
 
     private void showLevel(int level) {
