@@ -20,7 +20,7 @@ public class Controller extends Observable {
 
 	private Problem huidigProbleem;
 
-	private int limit, inLimit, outLimit, klok;
+	private int limit, inLimit, outLimit, klok, klokIN, klokOUT;
 
 	private Yard yard;
 
@@ -39,13 +39,17 @@ public class Controller extends Observable {
 
 	public void doStep(boolean notify) throws IOException {
 
-		if (klok < inLimit) {
-			yard.executeJob(huidigProbleem.getInputJobSequence().get(klok), "INPUT");
+		if (klokIN < inLimit) {
+			if(yard.executeJob(huidigProbleem.getInputJobSequence().get(klok), "INPUT")) {
+				klokIN++;
+			}
 			// yard.printOutYard();
 		}
 
-		if (klok < outLimit) {
-			yard.executeJob(huidigProbleem.getOutputJobSequence().get(klok), "OUTPUT");
+		if (klokOUT < outLimit) {
+			if(yard.executeJob(huidigProbleem.getOutputJobSequence().get(klok), "OUTPUT")) {
+				klokOUT++;
+			}
 			// yard.printOutYard();
 		}
 
@@ -55,7 +59,7 @@ public class Controller extends Observable {
 			notifyObservers();
 		}
 
-		if (klok >= inLimit && klok >= outLimit) {
+		if (klokIN >= inLimit && klokOUT >= outLimit) {
 			yard.getWriter().close();
 		}
 	}
@@ -69,6 +73,8 @@ public class Controller extends Observable {
 		outLimit = huidigProbleem.getOutputJobSequence().size();
 		limit = Math.max(inLimit, outLimit);
 		klok = 0;
+		klokIN = 0;
+		klokOUT = 0;
 	}
 
 	public void setFileBigNietGeschrankt() {
@@ -141,6 +147,26 @@ public class Controller extends Observable {
 
 	public int getKlok() {
 		return klok;
+	}
+
+	public int getKlokIN() {
+		return klokIN;
+	}
+
+	public void setKlokIN(int klokIN) {
+		this.klokIN = klokIN;
+	}
+
+	public int getKlokOUT() {
+		return klokOUT;
+	}
+
+	public void setKlokOUT(int klokOUT) {
+		this.klokOUT = klokOUT;
+	}
+
+	public void setKlok(int klok) {
+		this.klok = klok;
 	}
 
 	public Yard getYard() {
