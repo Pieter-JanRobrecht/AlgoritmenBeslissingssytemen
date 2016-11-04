@@ -7,7 +7,7 @@ public class Gantry {
 
     private final int id;
     private final int xMin,xMax;
-    private final int startX,startY;
+    private  int startX,startY;
     private final double xSpeed,ySpeed;
 
     public Gantry(int id,
@@ -43,6 +43,14 @@ public class Gantry {
         return startY;
     }
 
+    public void setStartX(int startX) {
+        this.startX = startX;
+    }
+
+    public void setStartY(int startY) {
+        this.startY = startY;
+    }
+
     public double getXSpeed() {
         return xSpeed;
     }
@@ -69,4 +77,5 @@ public class Gantry {
     public boolean canReachSlot(Slot s) {
         return xMin <= s.getCenterX() && s.getCenterY() <= xMax;
     }
+
 }

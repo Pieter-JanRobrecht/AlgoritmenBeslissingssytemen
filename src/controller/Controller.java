@@ -18,150 +18,158 @@ import java.util.Arrays;
  */
 public class Controller extends Observable {
 
+	private Problem huidigProbleem;
 
-    private Problem huidigProbleem;
+	private int limit, inLimit, outLimit, klok, klokIN, klokOUT;
 
-    private int limit, inLimit, outLimit, klok;
+	private Yard yard;
 
-    private Yard yard;
-    FileWriter writer;
+	public Controller() throws IOException {
 
-    public Controller() throws IOException {
+		if (huidigProbleem == null) {
+			setFileSmall();
+		}
+		// String csvFile = "./data/csv/test.csv";
+		// FileWriter writer = new FileWriter(csvFile);
+		// CSVUtils.writeLine(writer,
+		// Arrays.asList("gID","T","x","y","itemInCraneID"));
+		// writer.flush();
+		reset();
+	}
 
-        if (huidigProbleem == null) {
-            setFileSmall();
-        }
-        // String csvFile = "./data/csv/test.csv";
-        // FileWriter writer = new FileWriter(csvFile);
-        // CSVUtils.writeLine(writer, Arrays.asList("gID","T","x","y","itemInCraneID"));
-        // writer.flush();
-        reset();
-    }
+	public void reset() {
+		yard = new Yard(huidigProbleem);
+		// y.printOutYard();
+		// y.printHash();
 
-    public void doStep(boolean notify) throws IOException {
+		inLimit = huidigProbleem.getInputJobSequence().size();
+		outLimit = huidigProbleem.getOutputJobSequence().size();
+		limit = Math.max(inLimit, outLimit);
+		klok = 0;
+		klokIN = 0;
+		klokOUT = 0;
+	}
 
+	public void doStep(boolean notify) throws IOException {
 
-        if (klok == 0) {
-            try {
-                File hulp = new File(Main.class.getClassLoader().getResource("test.csv").toURI());
-                writer = new FileWriter(hulp);
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-            }
-            CSVUtils.writeLine(writer, Arrays.asList("gID", "T", "x", "y", "itemInCraneID"));
-            writer.flush();
-        }
+		if (klokIN < inLimit) {
+			if (yard.executeJob(huidigProbleem.getInputJobSequence().get(klokIN), "INPUT")) {
+				klokIN++;
+			}
+			// yard.printOutYard();
+		}
 
+		if (klokOUT < outLimit) {
+			if (yard.executeJob(huidigProbleem.getOutputJobSequence().get(klokOUT), "OUTPUT")) {
+				klokOUT++;
+			}
+			// yard.printOutYard();
+		}
 
-        if (klok < inLimit) {
-            yard.executeJob(huidigProbleem.getInputJobSequence().get(klok), "INPUT");
-//            yard.printOutYard();
+		klok = Math.min(klokIN, klokOUT);
+		if (notify) {
+			setChanged();
+			notifyObservers();
+		}
 
-            CSVUtils.writeLine(writer, Arrays.asList("" + Yard.csvparam1[0], "" + klok, "" + Yard.csvparam1[1], "" + Yard.csvparam1[2], "" + Yard.csvparam1[3]));
-            writer.flush();
-        }
-        if (klok < outLimit) {
-            yard.executeJob(huidigProbleem.getOutputJobSequence().get(klok), "OUTPUT");
-//            yard.printOutYard();
-            CSVUtils.writeLine(writer, Arrays.asList("" + Yard.csvparam1[0], "" + klok, "" + Yard.csvparam1[1], "" + Yard.csvparam1[2], "" + Yard.csvparam1[3]));
-            writer.flush();
-        }
+		if (klokIN >= inLimit && klokOUT >= outLimit) {
+			yard.getWriter().close();
+		}
+	}
 
-        klok++;
-        if (notify) {
-            setChanged();
-            notifyObservers();
-        }
+	public void setFileBigNietGeschrankt() {
+		File file = null;
 
-        if (klok >= inLimit && klok >= outLimit) {
-            writer.close();
-        }
-    }
+		try {
+			file = new File(Main.class.getClassLoader().getResource("1_50_50_10_FALSE_60_25_100.json").toURI());
+		} catch (URISyntaxException e) {
+			System.out.println("Problem with loading file: 1_50_50_10_FALSE_60_25_100.json");
+			System.out.println("Using a different method to load the file");
+			file = new File("./data/1_50_50_10_FALSE_60_25_100.json");
+		}
 
-    public void reset() {
-        yard = new Yard(huidigProbleem);
-        //y.printOutYard();
-        //y.printHash();
+		try {
+			huidigProbleem = Problem.fromJson(file);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ParseException e) {
+			System.out.println("Problem with parsing the file: 1_50_50_10_FALSE_60_25_100.json");
+		}
+	}
 
-        inLimit = huidigProbleem.getInputJobSequence().size();
-        outLimit = huidigProbleem.getOutputJobSequence().size();
-        limit = Math.max(inLimit, outLimit);
-        klok = 0;
-    }
+	public void setFileBigGeschrankt() {
+		File file = null;
 
-    public void setFileBigNietGeschrankt() {
-        File file = null;
+		try {
+			file = new File(Main.class.getClassLoader().getResource("1_50_50_10_TRUE_60_25_100.json").toURI());
+		} catch (URISyntaxException e) {
+			System.out.println("Problem with loading file: 1_50_50_10_TRUE_60_25_100.json");
+			System.out.println("Using a different method to load the file");
+			file = new File("./data/1_50_50_10_TRUE_60_25_100.json");
+		}
 
-        try {
-            file = new File(Main.class.getClassLoader().getResource("1_50_50_10_FALSE_60_25_100.json").toURI());
-        } catch (URISyntaxException e) {
-            System.out.println("Problem with loading file: 1_50_50_10_FALSE_60_25_100.json");
-            System.out.println("Using a different method to load the file");
-            file = new File("./data/1_50_50_10_FALSE_60_25_100.json");
-        }
+		try {
+			huidigProbleem = Problem.fromJson(file);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ParseException e) {
+			System.out.println("Problem with parsing the file: 1_50_50_10_TRUE_60_25_100.json");
+		}
+	}
 
-        try {
-            huidigProbleem = Problem.fromJson(file);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            System.out.println("Problem with parsing the file: 1_50_50_10_FALSE_60_25_100.json");
-        }
-    }
+	public void setFileSmall() {
+		File file = null;
 
-    public void setFileBigGeschrankt() {
-        File file = null;
+		try {
+			file = new File(Main.class.getClassLoader().getResource("testInput.json").toURI());
+		} catch (URISyntaxException e) {
+			System.out.println("Problem with loading file: testInput.json");
+			System.out.println("Using a different method to load the file");
+			file = new File("./data/testInput.json");
+		}
 
-        try {
-            file = new File(Main.class.getClassLoader().getResource("1_50_50_10_TRUE_60_25_100.json").toURI());
-        } catch (URISyntaxException e) {
-            System.out.println("Problem with loading file: 1_50_50_10_TRUE_60_25_100.json");
-            System.out.println("Using a different method to load the file");
-            file = new File("./data/1_50_50_10_TRUE_60_25_100.json");
-        }
+		try {
+			huidigProbleem = Problem.fromJson(file);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ParseException e) {
+			System.out.println("Problem with parsing the file: testInput.json");
+		}
+	}
 
-        try {
-            huidigProbleem = Problem.fromJson(file);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            System.out.println("Problem with parsing the file: 1_50_50_10_TRUE_60_25_100.json");
-        }
-    }
+	public Problem getHuidigProbleem() {
+		return huidigProbleem;
+	}
 
-    public void setFileSmall() {
-        File file = null;
+	public int getLimit() {
+		return limit;
+	}
 
-        try {
-            file = new File(Main.class.getClassLoader().getResource("testInput.json").toURI());
-        } catch (URISyntaxException e) {
-            System.out.println("Problem with loading file: testInput.json");
-            System.out.println("Using a different method to load the file");
-            file = new File("./data/testInput.json");
-        }
+	public int getKlok() {
+		return klok;
+	}
 
-        try {
-            huidigProbleem = Problem.fromJson(file);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            System.out.println("Problem with parsing the file: testInput.json");
-        }
-    }
+	public int getKlokIN() {
+		return klokIN;
+	}
 
-    public Problem getHuidigProbleem() {
-        return huidigProbleem;
-    }
+	public void setKlokIN(int klokIN) {
+		this.klokIN = klokIN;
+	}
 
-    public int getLimit() {
-        return limit;
-    }
+	public int getKlokOUT() {
+		return klokOUT;
+	}
 
-    public int getKlok() {
-        return klok;
-    }
+	public void setKlokOUT(int klokOUT) {
+		this.klokOUT = klokOUT;
+	}
 
-    public Yard getYard() {
-        return yard;
-    }
+	public void setKlok(int klok) {
+		this.klok = klok;
+	}
+
+	public Yard getYard() {
+		return yard;
+	}
 }

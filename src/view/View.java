@@ -140,6 +140,7 @@ public class View implements Observer {
                 }
             }
         });
+        dropDown.getSelectionModel().select(0);
     }
 
     private void showLevel(int level) {
@@ -189,7 +190,7 @@ public class View implements Observer {
 
         for (int i = 0; i < yard.length; i++) {
             Slot slot = yard[i][level];
-            if (slot.getItem() != null) {
+            if (slot != null && slot.getItem() != null) {
                 cx = slot.getCenterX() / 5;
                 cy = slot.getCenterY() / 5;
             }
