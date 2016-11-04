@@ -28,8 +28,6 @@ public class Yard {
 	private HashMap<Integer, Slot> itemIDList = new HashMap<Integer, Slot>();
 	private List<Slot> slotList;
 	private Slot inputSlot, outputSlot;
-	private List<Job> backlogOUT = new ArrayList<>();
-	private List<Job> backlogIN = new ArrayList<>();
 	private boolean debug = false;
 	private List<Gantry> gantries;
 	private FileWriter writer;
@@ -49,7 +47,6 @@ public class Yard {
 			writer = new FileWriter(hulp);
 			CSVUtils.writeLine(writer, Arrays.asList("gID", "T", "x", "y", "itemInCraneID"));
 			writer.flush();
-
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (URISyntaxException e) {
@@ -103,14 +100,6 @@ public class Yard {
 
 	public void setOutputSlot(Slot outputSlot) {
 		this.outputSlot = outputSlot;
-	}
-
-	public List<Job> getBacklogIN() {
-		return backlogIN;
-	}
-
-	public void setBacklogIN(List<Job> backlogIN) {
-		this.backlogIN = backlogIN;
 	}
 
 	public FileWriter getWriter() {
@@ -176,14 +165,6 @@ public class Yard {
 			e.printStackTrace();
 			return null;
 		}
-	}
-
-	public List<Job> getBacklogOUT() {
-		return backlogOUT;
-	}
-
-	public void setBacklogOUT(List<Job> backlog) {
-		this.backlogOUT = backlog;
 	}
 
 	public void printOutYard() {
@@ -280,7 +261,6 @@ public class Yard {
 				succes = true;
 				// itemIDList.remove(core.getItem().getId());
 
-				
 				// Begin positie van gantry
 				int x = gantry.getStartX();
 				int y = gantry.getStartY();
@@ -314,8 +294,8 @@ public class Yard {
 					e.printStackTrace();
 				}
 
-                core.setItem(null); // --> zogezegd naar eindslot gemoved en
-                // verwijdert uit yard
+				core.setItem(null); // --> zogezegd naar eindslot gemoved en
+				// verwijdert uit yard
 			}
 		}
 		return succes;
@@ -373,7 +353,8 @@ public class Yard {
 				} else {
 					vrij = false;
 					if (s.getZ() + 1 == height || maakVrijBoven(yard[yCoords * length + xCoords][s.getZ() + 1])) {
-//						yard[yCoords * length + xCoords][s.getZ()].setItem(null);
+						// yard[yCoords * length +
+						// xCoords][s.getZ()].setItem(null);
 						return true;
 					}
 				}
@@ -461,7 +442,7 @@ public class Yard {
 				itemIDList.put(temp.getItem().getId(), temp);
 				if (debug)
 					System.out.println("DEBUG - We found a suiteable slot! " + temp.toString());
-				
+
 				// Begin positie van gantry
 				int x = gantry.getStartX();
 				int y = gantry.getStartY();
@@ -507,7 +488,6 @@ public class Yard {
 
 			if (!succes) {
 				System.out.println("We failed to handle item " + j.getItem().toString() + " (IN) for now, backlogging");
-				backlogIN.add(j);
 			} else
 				System.out.println("We succeeded in handling (IN) item " + j.getItem().toString());
 		} else if (mode == "OUTPUT") {
@@ -517,10 +497,10 @@ public class Yard {
 			if (!succes) {
 				System.out
 						.println("We failed to handle item " + j.getItem().toString() + " (OUT) for now, backlogging");
-				backlogOUT.add(j);
 			} else
 				System.out.println("We succeeded in handling (OUT) item " + j.getItem().toString());
 		}
+
 		return succes;
 	}
 
