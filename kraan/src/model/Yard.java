@@ -29,7 +29,8 @@ public class Yard {
 	private List<Slot> slotList;
 	private Slot inputSlot, outputSlot;
 	private boolean debug = false;
-	private boolean debugL = true;
+	private boolean debugL = false;
+	private boolean debugM = false;
 	private List<Gantry> gantries;
 	private FileWriter writer;
 
@@ -323,12 +324,13 @@ public class Yard {
 								if (yard[width * length + (yCoords * length + xCoords - yCoords)][s.getZ() + 1] != null)
 									System.out.println("We'll need to empty: "
 											+ yard[width * length + (yCoords * length + xCoords - yCoords)][s.getZ()
-													+ 1].toString());
+											+ 1].toString());
 								else
 									System.out.println("It seems we've found a null slot above us. (1L)");
 							}
 							if (maakVrijBoven(
-									yard[width * length + (yCoords * length + xCoords - yCoords)][s.getZ() + 1])) {
+									yard[width * length + (yCoords * length + xCoords - yCoords)][s.getZ() + 1],
+									xCoords, yCoords, s.getZ())) {
 								vrij = true;
 							}
 						} else if (xCoords == 0) {
@@ -339,11 +341,12 @@ public class Yard {
 								if (yard[width * length + (yCoords * length + 1 - yCoords)][s.getZ() + 1] != null)
 									System.out.println("We'll need to empty: "
 											+ yard[width * length + (yCoords * length + 1 - yCoords)][s.getZ() + 1]
-													.toString());
+											.toString());
 								else
 									System.out.println("It seems we've found a null slot above us. (1R)");
 							}
-							if (maakVrijBoven(yard[width * length + (yCoords * length + 1 - yCoords)][s.getZ() + 1])) {
+							if (maakVrijBoven(yard[width * length + (yCoords * length + 1 - yCoords)][s.getZ() + 1],
+									xCoords, yCoords, s.getZ())) {
 								vrij = true;
 							}
 						} else {
@@ -354,27 +357,30 @@ public class Yard {
 								if (yard[width * length + (yCoords * length + 1 - yCoords)][s.getZ() + 1] != null)
 									System.out.println("We'll need to empty: "
 											+ yard[width * length + (yCoords * length + 1 - yCoords)][s.getZ() + 1]
-													.toString());
+											.toString());
 								else
 									System.out.println("It seems we've found a null slot above us. (2R)");
 								if (yard[width * length + (yCoords * length + xCoords - yCoords)][s.getZ() + 1] != null)
 									System.out.println("We'll need to empty: "
 											+ yard[width * length + (yCoords * length + xCoords - yCoords)][s.getZ()
-													+ 1].toString());
+											+ 1].toString());
 								else
 									System.out.println("It seems we've found a null slot above us. (2L)");
 							}
 
 							if (maakVrijBoven(
-									yard[width * length + (yCoords * length + xCoords - yCoords)][s.getZ() + 1])
+									yard[width * length + (yCoords * length + xCoords - yCoords)][s.getZ() + 1],
+									xCoords, yCoords, s.getZ())
 									&& maakVrijBoven(
-											yard[width * length + (yCoords * length + (xCoords + 1) - yCoords)][s.getZ()
-													+ 1])) {
+									yard[width * length + (yCoords * length + (xCoords + 1) - yCoords)][s.getZ()
+											+ 1],
+									xCoords, yCoords, s.getZ())) {
 								vrij = true;
 							}
 						}
 
 					} else {
+						System.out.println("DEBUG !1! - Reached topside");
 						return true;
 					}
 				} else {
@@ -398,11 +404,13 @@ public class Yard {
 								System.out.println("It seems we've found a null slot above us. (2L)");
 						}
 						// altijd 2 kanten ;-;
-						if (maakVrijBoven(yard[yCoords * length + xCoords][s.getZ() + 1])
-								&& maakVrijBoven(yard[yCoords * length + xCoords - 1][s.getZ() + 1])) {
+						if (maakVrijBoven(yard[yCoords * length + xCoords][s.getZ() + 1], xCoords, yCoords, s.getZ())
+								&& maakVrijBoven(yard[yCoords * length + xCoords - 1][s.getZ() + 1], xCoords, yCoords,
+								s.getZ())) {
 							vrij = true;
 						}
 					} else {
+						System.out.println("DEBUG !2! - Reached topside");
 						return true;
 					}
 				}
@@ -418,7 +426,8 @@ public class Yard {
 				} else {
 					vrij = false;
 
-					if (s.getZ() + 1 == height || maakVrijBoven(yard[yCoords * length + xCoords][s.getZ() + 1])) {
+					if (s.getZ() + 1 == height || maakVrijBoven(yard[yCoords * length + xCoords][s.getZ() + 1], xCoords,
+							yCoords, s.getZ())) {
 						return true;
 					}
 				}
@@ -428,8 +437,8 @@ public class Yard {
 		return vrij;
 	}
 
-	public boolean maakVrijBoven(Slot s) {
-		if (s == null)
+	public boolean maakVrijBoven(Slot s, int coreX, int coreY, int coreZ) {
+		if (s == null || s.getItem() == null) // HIHI
 			return true;
 		if (debug)
 			System.out.println("DEBUG - Trying to empty slot.. " + s.toString());
@@ -464,13 +473,14 @@ public class Yard {
 											+ 1] != null)
 										System.out.println("We'll need to empty: "
 												+ yard[width * length + (yCoords * length + xCoords - yCoords)][s.getZ()
-														+ 1].toString());
+												+ 1].toString());
 									else
 										System.out.println("It seems we've found a null slot above us. (1L)");
 								}
 								if (maakVrijBoven(
-										yard[width * length + (yCoords * length + xCoords - yCoords)][s.getZ() + 1])) {
-									if (moveItem(s)) {
+										yard[width * length + (yCoords * length + xCoords - yCoords)][s.getZ() + 1],
+										coreX, coreY, coreZ)) {
+									if (moveItem(s, coreX, coreY, coreZ)) {
 										s.setItem(null);
 										vrij = true;
 									}
@@ -483,13 +493,13 @@ public class Yard {
 									if (yard[width * length + (yCoords * length + 1 - yCoords)][s.getZ() + 1] != null)
 										System.out.println("We'll need to empty: "
 												+ yard[width * length + (yCoords * length + 1 - yCoords)][s.getZ() + 1]
-														.toString());
+												.toString());
 									else
 										System.out.println("It seems we've found a null slot above us. (1R)");
 								}
-								if (maakVrijBoven(
-										yard[width * length + (yCoords * length + 1 - yCoords)][s.getZ() + 1])) {
-									if (moveItem(s)) {
+								if (maakVrijBoven(yard[width * length + (yCoords * length + 1 - yCoords)][s.getZ() + 1],
+										coreX, coreY, coreZ)) {
+									if (moveItem(s, coreX, coreY, coreZ)) {
 										s.setItem(null);
 										vrij = true;
 									}
@@ -509,16 +519,18 @@ public class Yard {
 											+ 1] != null)
 										System.out.println("We'll need to empty: "
 												+ yard[width * length + (yCoords * length + xCoords - yCoords)][s.getZ()
-														+ 1].toString());
+												+ 1].toString());
 									else
 										System.out.println("It seems we've found a null slot above us. (2L)");
 								}
 
 								if (maakVrijBoven(
-										yard[width * length + (yCoords * length + xCoords - yCoords)][s.getZ() + 1])
+										yard[width * length + (yCoords * length + xCoords - yCoords)][s.getZ() + 1],
+										coreX, coreY, coreZ)
 										&& maakVrijBoven(yard[width * length
-												+ (yCoords * length + (xCoords + 1) - yCoords)][s.getZ() + 1])) {
-									if (moveItem(s)) {
+												+ (yCoords * length + (xCoords + 1) - yCoords)][s.getZ() + 1], coreX,
+										coreY, coreZ)) {
+									if (moveItem(s, coreX, coreY, coreZ)) {
 										s.setItem(null);
 										vrij = true;
 									}
@@ -527,6 +539,10 @@ public class Yard {
 							}
 
 						} else {
+							System.out.println("DEBUG !3! - Reached topside");
+							if (moveItem(s, coreX, coreY, coreZ)) {
+								s.setItem(null);
+							}
 							return true;
 						}
 					} else {
@@ -552,15 +568,20 @@ public class Yard {
 							}
 
 							// altijd 2 kanten ;-;
-							if (maakVrijBoven(yard[yCoords * length + xCoords][s.getZ() + 1])
-									&& maakVrijBoven(yard[yCoords * length + xCoords - 1][s.getZ() + 1])) {
-								if (moveItem(s)) {
+							if (maakVrijBoven(yard[yCoords * length + xCoords][s.getZ() + 1], coreX, coreY, coreZ)
+									&& maakVrijBoven(yard[yCoords * length + xCoords - 1][s.getZ() + 1], coreX, coreY,
+									coreZ)) {
+								if (moveItem(s, coreX, coreY, coreZ)) {
 									s.setItem(null);
 									vrij = true;
 								}
 							}
 
 						} else {
+							System.out.println("DEBUG !4! - Reached topside");
+							if (moveItem(s, coreX, coreY, coreZ)) {
+								s.setItem(null);
+							}
 							return true;
 						}
 					}
@@ -577,8 +598,9 @@ public class Yard {
 					return true;
 				} else {
 					vrij = false;
-					if (s.getZ() + 1 == height || maakVrijBoven(yard[yCoords * length + xCoords][s.getZ() + 1])) {
-						if (moveItem(s))
+					if (s.getZ() + 1 == height
+							|| maakVrijBoven(yard[yCoords * length + xCoords][s.getZ() + 1], coreX, coreY, coreZ)) {
+						if (moveItem(s, coreX, coreY, coreZ))
 							s.setItem(null);
 						return true;
 					}
@@ -589,28 +611,104 @@ public class Yard {
 		return vrij;
 	}
 
-	public boolean moveItem(Slot s) {
-		if (debug || debugL)
+	public boolean isOnderVrij(Slot s) {
+		int xCoords = s.getCenterX() / 10;
+		int yCoords = s.getCenterY() / 10;
+
+		if (s.getZ() == 0)
+			return false;
+
+		if (staggered) {
+			if (s.getZ() % 2 == 0) {
+				System.out.println("DEBUG !! (%2==0) - x:" + xCoords + " y: " + yCoords);
+				// even (0 ook even) ==> NOT STAGGERED, HIERONDER WEL
+				if (yard[width * length + (yCoords * length + (xCoords + 1) - yCoords)][s.getZ() - 1].getItem() == null) {
+					System.out.println("1e IF: " + width * length + (yCoords * length + (xCoords + 1) - yCoords));
+					return true;
+				}
+
+				if (yard[width * length + (yCoords * length + xCoords - yCoords)][s.getZ() - 1].getItem() == null) {
+					System.out.println("2e IF: " + width * length + (yCoords * length + xCoords - yCoords));
+					return true;
+				}
+			} else {
+				System.out.println("DEBUG !! (%2!=0) - x:" + xCoords + " y: " + yCoords);
+				// oneven ==> STAGGERED, HIERONDER NIET
+				if (yard[yCoords * length + xCoords][s.getZ() - 1].getItem() == null) {
+					System.out.println("1e IF: " + yCoords * length + xCoords);
+					return true;
+				}
+
+				if (yard[yCoords * length + xCoords - 1][s.getZ() - 1].getItem() == null) {
+					System.out.println("1e IF: " + (yCoords * length + xCoords - 1));
+					return true;
+				}
+			}
+
+		} else {
+			if (yard[yCoords * length + xCoords][s.getZ() - 1].getItem() == null) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean moveItem(Slot s, int coreX, int coreY, int coreZ) {
+		if (debug || debugL || debugM)
 			System.out.println("DEBUG - Moving from slot (" + s.getId() + "): item (" + s.getItem().getId() + ")");
 		boolean succes = false;
 
 		writeMove(s, gantry, null);
 		writePickUp(s, gantry, s.getItem().getId());
 
-		for (int j = 0; j < slotList.size(); j++) {
-			Slot temp = slotList.get(j);
-			if (temp.getItem() == null && (temp.getCenterX()+1 < s.getCenterX() || temp.getCenterX()-1 > s.getCenterX() )) {
-				temp.setItem(s.getItem());
-				succes = true;
-				j = slotList.size() + 10;
-				itemIDList.put(temp.getItem().getId(), temp);
-				if (debug || debugL)
-					System.out.println("DEBUG - We found a suiteable slot! " + temp.toString());
+		if (staggered) {
+			for (int j = 0; j < slotList.size(); j++) {
+				Slot temp = slotList.get(j);
+				if (debugM)
 
-				writeMove(temp, gantry, s.getItem().getId());
-				writePlacement(temp, gantry);
+					System.out.println("DEBUG !! - isEmpty?" + (temp.getItem() == null) + ", tempSlot getCenterX: " + temp.getCenterX() / 10 + ", height difference: " + (s.getZ() - coreZ)
+							+ ", coreX: " + coreX + " | ?"
+							+ ((temp.getCenterX() / 10 + (s.getZ() - coreZ)) < coreX)
+							+ " ?" + ((temp.getCenterX() / 10 - (s.getZ() - coreZ)) > coreX));
+
+				if (temp.getItem() == null && (temp.getZ() <= coreZ || (temp.getCenterX() / 10 + (s.getZ() - coreZ)) < coreX
+						|| (temp.getCenterX() / 10 - (s.getZ() - coreZ)) > coreX)) {
+//if (temp.getItem() == null && (temp.getCenterX()+1 < s.getCenterX() || temp.getCenterX()-1 > s.getCenterX() )) {
+					if (!isOnderVrij(temp)) {
+						if (debugM)
+							System.out.println("DEBUG - Is not flying, found a suiteable slot (staggered)! " + temp.toString());
+						temp.setItem(s.getItem());
+						succes = true;
+						j = slotList.size() + 10;
+						itemIDList.put(temp.getItem().getId(), temp);
+						if (debug || debugL)
+							System.out.println("DEBUG - We found a suiteable slot (staggered)! " + temp.toString());
+
+						writeMove(temp, gantry, s.getItem().getId());
+						writePlacement(temp, gantry);
+					} else if (debugM) {
+						System.out.println("###################################################################");
+					}
+				}
+			}
+		} else {
+			for (int j = 0; j < slotList.size(); j++) {
+				Slot temp = slotList.get(j);
+				if (temp.getItem() == null && (temp.getCenterX() != s.getCenterX())) {
+					temp.setItem(s.getItem());
+					succes = true;
+					j = slotList.size() + 10;
+					itemIDList.put(temp.getItem().getId(), temp);
+					if (debug || debugL)
+						System.out.println("DEBUG - We found a suiteable slot (non staggered)! " + temp.toString());
+
+					writeMove(temp, gantry, s.getItem().getId());
+					writePlacement(temp, gantry);
+				}
 			}
 		}
+
+
 		return succes;
 	}
 
@@ -686,9 +784,8 @@ public class Yard {
 	}
 
 	private void writeMove(Slot temp, Gantry gantry, Integer itemId) {
-		double bewegingstijd = Math.max(
-                Math.abs(temp.getCenterX() - gantry.getStartX()) / (gantry.getXSpeed()),
-                Math.abs(temp.getCenterY() - gantry.getStartY()) / (gantry.getYSpeed()));
+		double bewegingstijd = Math.max(Math.abs(temp.getCenterX() - gantry.getStartX()) / (gantry.getXSpeed()),
+				Math.abs(temp.getCenterY() - gantry.getStartY()) / (gantry.getYSpeed()));
 
 		clock += bewegingstijd;
 		gantry.setStartX(temp.getCenterX());
