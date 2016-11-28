@@ -1,5 +1,6 @@
 package view;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,11 +17,14 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
+import javafx.stage.FileChooser;
 import javafx.stage.Popup;
+import javafx.stage.Stage;
 import kraan.Problem;
 import kraan.Slot;
 import org.controlsfx.control.NotificationPane;
 import org.controlsfx.control.Notifications;
+import org.json.simple.parser.ParseException;
 
 import javax.management.Notification;
 
@@ -85,7 +89,7 @@ public class View implements Observer {
         int klokOut = controller.getKlokOUT();
         int limitIn = controller.getInLimit();
         int limitOut = controller.getOutLimit();
-        while (klokIn < limitIn || klokOut < limitOut){
+        while (klokIn < limitIn || klokOut < limitOut) {
             controller.doStep(false);
 
             klokIn = controller.getKlokIN();
@@ -228,23 +232,27 @@ public class View implements Observer {
 
     @FXML
     void loadFileBigNietGeschrankt(ActionEvent event) {
-        controller.setFileBigNietGeschrankt();
-        resetField();
-        initField();
-    }
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setInitialDirectory(
+                new File(".")
+        );
+        fileChooser.setTitle("Open Resource File");
+        File file = fileChooser.showOpenDialog((Stage) dropDown.getScene().getWindow());
 
-    @FXML
-    void loadFileBigGeschrankt(ActionEvent event) {
-        controller.setFileBigGeschrankt();
-        resetField();
-        initField();
-    }
-
-    @FXML
-    void loadFileSmall(ActionEvent event) {
-        controller.setFileSmall();
-        resetField();
-        initField();
+        if(file != null){
+            try {
+                controller.setHuidigProbleem(Problem.fromJson(file));
+            } catch (IOException | ParseException e) {
+                e.printStackTrace();
+            }
+            resetField();
+            initField();
+        }else {
+            Notifications.create()
+                    .title("ERROR")
+                    .text("Gelieve een bestand te kiezen")
+                    .showError();
+        }
     }
 
     @Override

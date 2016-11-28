@@ -1,5 +1,6 @@
 package controller;
 
+import javafx.stage.FileChooser;
 import kraan.Job;
 import kraan.Main;
 import kraan.Problem;
@@ -179,5 +180,9 @@ public class Controller extends Observable {
 
 	public int getOutLimit() {
 		return outLimit;
+	}
+
+	public void setHuidigProbleem(Problem huidigProbleem) {
+		this.huidigProbleem = huidigProbleem;
 	}
 }
