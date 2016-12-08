@@ -1,12 +1,5 @@
 package view;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
-
 import controller.Controller;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -18,15 +11,20 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
-import javafx.stage.Popup;
 import javafx.stage.Stage;
+import kraan.Main;
 import kraan.Problem;
 import kraan.Slot;
-import org.controlsfx.control.NotificationPane;
 import org.controlsfx.control.Notifications;
 import org.json.simple.parser.ParseException;
 
-import javax.management.Notification;
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 
 /**
@@ -233,9 +231,14 @@ public class View implements Observer {
     @FXML
     void loadFileBigNietGeschrankt(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setInitialDirectory(
-                new File(".")
-        );
+        try {
+            fileChooser.setInitialDirectory(
+    //                new File(".")
+            new File(Main.class.getClassLoader().getResource(".").toURI())
+            );
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
         fileChooser.setTitle("Open Resource File");
         File file = fileChooser.showOpenDialog((Stage) dropDown.getScene().getWindow());
 

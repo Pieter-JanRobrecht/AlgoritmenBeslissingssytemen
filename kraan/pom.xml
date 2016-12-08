@@ -8,7 +8,7 @@
 		<sourceDirectory>src</sourceDirectory>
 		<resources>
 			<resource>
-				<directory>kraan/data</directory>
+				<directory>data</directory>
 			</resource>
 		</resources>
 		<plugins>

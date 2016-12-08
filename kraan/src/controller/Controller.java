@@ -1,7 +1,6 @@
 package controller;
 
-import javafx.stage.FileChooser;
-import kraan.Job;
+import javafx.stage.Stage;
 import kraan.Main;
 import kraan.Problem;
 import model.Yard;
@@ -11,8 +10,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Observable;
-import java.io.FileWriter;
-import java.util.Arrays;
 
 /**
  * Created by Pieter-Jan on 20/10/2016.
@@ -24,9 +21,10 @@ public class Controller extends Observable {
 	private int limit, inLimit, outLimit, klok, klokIN, klokOUT;
 
 	private Yard yard;
+	private Stage stage;
 
-	public Controller() throws IOException {
-
+	public Controller(Stage primaryStage) throws IOException {
+		stage = primaryStage;
 		if (huidigProbleem == null) {
 			setFileSmall();
 		}
@@ -39,7 +37,7 @@ public class Controller extends Observable {
 	}
 
 	public void reset() {
-		yard = new Yard(huidigProbleem);
+		yard = new Yard(huidigProbleem, stage);
 		// y.printOutYard();
 		// y.printHash();
 
@@ -86,7 +84,7 @@ public class Controller extends Observable {
 		} catch (URISyntaxException e) {
 			System.out.println("Problem with loading file: 1_50_50_10_FALSE_60_25_100.json");
 			System.out.println("Using a different method to load the file");
-			file = new File("./data/1_50_50_10_FALSE_60_25_100.json");
+			file = new File("/1_50_50_10_FALSE_60_25_100.json");
 		}
 
 		try {
@@ -106,7 +104,7 @@ public class Controller extends Observable {
 		} catch (URISyntaxException e) {
 			System.out.println("Problem with loading file: 1_50_50_10_TRUE_60_25_100.json");
 			System.out.println("Using a different method to load the file");
-			file = new File("./data/1_50_50_10_TRUE_60_25_100.json");
+			file = new File("/1_50_50_10_TRUE_60_25_100.json");
 		}
 
 		try {
@@ -126,7 +124,7 @@ public class Controller extends Observable {
 		} catch (URISyntaxException e) {
 			System.out.println("Problem with loading file: testInput.json");
 			System.out.println("Using a different method to load the file");
-			file = new File("./data/testInput.json");
+			file = new File("/testInput.json");
 		}
 
 		try {
