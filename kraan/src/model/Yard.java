@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import controller.CSVUtils;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import kraan.Gantry;
 import kraan.Item;
 import kraan.Job;
@@ -36,7 +38,10 @@ public class Yard {
 
 	private boolean staggered;
 
-	public Yard(Problem probleem) {
+	private Stage stage;
+
+	public Yard(Problem probleem, Stage stage) {
+		this.stage = stage;
 		System.out.println("Yard initiating..");
 
 		for (int i = 0; i < probleem.getSlots().size(); i++) {
@@ -191,7 +196,20 @@ public class Yard {
 			pickUpPlaceDuration = probleem.getPickupPlaceDuration();
 			gantry = gantries.get(0);
 
-			File hulp = new File(Main.class.getClassLoader().getResource("KRAANOPDRACHT1_Groep_Groep3.csv").toURI());
+
+			FileChooser fileChooser = new FileChooser();
+			try {
+				fileChooser.setInitialDirectory(
+						//                new File(".")
+						new File(Main.class.getClassLoader().getResource(".").toURI())
+				);
+			} catch (URISyntaxException e) {
+				e.printStackTrace();
+			}
+			fileChooser.setTitle("Open Resource File");
+			File hulp = fileChooser.showOpenDialog(stage);
+
+//			File hulp = new File(Main.class.getClassLoader().getResource("KRAANOPDRACHT2_Groep3.csv").toURI());
 			writer = new FileWriter(hulp);
 			CSVUtils.writeLine(writer, Arrays.asList("gID", "T", "x", "y", "itemInCraneID"));
 			writer.flush();
@@ -202,8 +220,6 @@ public class Yard {
 			}
 
 		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
 	}

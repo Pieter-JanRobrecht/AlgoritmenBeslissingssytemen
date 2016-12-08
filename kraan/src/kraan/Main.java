@@ -42,7 +42,7 @@ public class Main extends Application {
             View viewController = loader.<View>getController() ;
             assert(viewController != null);
 
-            Controller controller = new Controller();
+            Controller controller = new Controller(primaryStage);
 
             //Link tussen controller en view
             viewController.setController(controller);
