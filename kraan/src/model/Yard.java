@@ -730,6 +730,12 @@ public class Yard {
 				System.out.println("We failed to handle item " + j.getItem().toString() + " (OUT) for now");
 			} else
 				System.out.println("We succeeded in handling (OUT) item " + j.getItem().toString());
+		} else if (mode.equals("DIRECT")) {
+			//Hier moet kraan sysoke doen van:
+			// Move to INPUT
+			// pickup
+			// Move to OUTPUT
+			// drop
 		}
 
 		return succes;
