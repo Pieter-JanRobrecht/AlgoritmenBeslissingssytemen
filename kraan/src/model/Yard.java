@@ -206,7 +206,7 @@ public class Yard {
             } catch (URISyntaxException e) {
                 e.printStackTrace();
             }
-            fileChooser.setTitle("Open Resource File");
+            fileChooser.setTitle("Open CSV File");
             File hulp = fileChooser.showOpenDialog(stage);
 
 //			File hulp = new File(Main.class.getClassLoader().getResource("KRAANOPDRACHT2_Groep3.csv").toURI());

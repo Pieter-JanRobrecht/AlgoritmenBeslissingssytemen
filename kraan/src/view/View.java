@@ -229,7 +229,7 @@ public class View implements Observer {
     }
 
     @FXML
-    void loadFileBigNietGeschrankt(ActionEvent event) {
+    void loadFile(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
         try {
             fileChooser.setInitialDirectory(
@@ -239,7 +239,7 @@ public class View implements Observer {
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
-        fileChooser.setTitle("Open Resource File");
+        fileChooser.setTitle("Kies File");
         File file = fileChooser.showOpenDialog((Stage) dropDown.getScene().getWindow());
 
         if(file != null){

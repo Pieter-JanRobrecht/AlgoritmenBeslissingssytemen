@@ -83,52 +83,7 @@ public class Controller extends Observable {
             setChanged();
             notifyObservers();
         }
-
-		try {
-			file = new File(Main.class.getClassLoader().getResource("1_50_50_10_FALSE_60_25_100.json").toURI());
-		} catch (URISyntaxException e) {
-			System.out.println("Problem with loading file: 1_50_50_10_FALSE_60_25_100.json");
-			System.out.println("Using a different method to load the file");
-			file = new File("/1_50_50_10_FALSE_60_25_100.json");
-		}
-
-    public void setFileBigNietGeschrankt() {
-        File file = null;
-
-        try {
-            file = new File(Main.class.getClassLoader().getResource("1_50_50_10_FALSE_60_25_100.json").toURI());
-        } catch (URISyntaxException e) {
-            System.out.println("Problem with loading file: 1_50_50_10_FALSE_60_25_100.json");
-            System.out.println("Using a different method to load the file");
-            file = new File("./data/1_50_50_10_FALSE_60_25_100.json");
-        }
-
-		try {
-			file = new File(Main.class.getClassLoader().getResource("1_50_50_10_TRUE_60_25_100.json").toURI());
-		} catch (URISyntaxException e) {
-			System.out.println("Problem with loading file: 1_50_50_10_TRUE_60_25_100.json");
-			System.out.println("Using a different method to load the file");
-			file = new File("/1_50_50_10_TRUE_60_25_100.json");
-		}
-
-    public void setFileBigGeschrankt() {
-        File file = null;
-
-        try {
-            file = new File(Main.class.getClassLoader().getResource("1_50_50_10_TRUE_60_25_100.json").toURI());
-        } catch (URISyntaxException e) {
-            System.out.println("Problem with loading file: 1_50_50_10_TRUE_60_25_100.json");
-            System.out.println("Using a different method to load the file");
-            file = new File("./data/1_50_50_10_TRUE_60_25_100.json");
-        }
-
-		try {
-			file = new File(Main.class.getClassLoader().getResource("testInput.json").toURI());
-		} catch (URISyntaxException e) {
-			System.out.println("Problem with loading file: testInput.json");
-			System.out.println("Using a different method to load the file");
-			file = new File("/testInput.json");
-		}
+    }
 
     public void setFileSmall() {
         File file = null;
