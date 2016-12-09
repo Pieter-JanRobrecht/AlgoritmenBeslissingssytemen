@@ -21,20 +21,11 @@ public class Controller extends Observable {
     private int limit, inLimit, outLimit, klok, klokIN, klokOUT;
 
     private Yard yard;
-    private boolean debug = true;
+    private boolean debug = false;
 	private Stage stage;
 
 	public Controller(Stage primaryStage) throws IOException {
 		stage = primaryStage;
-        if (huidigProbleem == null) {
-            setFileSmall();
-        }
-        // String csvFile = "./data/csv/test.csv";
-        // FileWriter writer = new FileWriter(csvFile);
-        // CSVUtils.writeLine(writer,
-        // Arrays.asList("gID","T","x","y","itemInCraneID"));
-        // writer.flush();
-        reset();
     }
 
 	public void reset() {
