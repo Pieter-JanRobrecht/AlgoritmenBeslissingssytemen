@@ -266,13 +266,12 @@ public class View implements Observer {
     public void update(Observable o, Object arg) {
         //TODO voor stukken up te daten
         try {
-            String output = dropDown.getSelectionModel().getSelectedItem().toString();
+            String output = dropDown.getSelectionModel().getSelectedItem();
             int level = Integer.parseInt(output.split(" ")[1]);
 
             showLevel(level);
         } catch (Exception e) {
-            //Hier moet er toch niks gebeuren.
-            //FU RHINO VOOR ALLES TE FUCKEN
+            //Hier moet er toch niks gebeuren
         }
     }
 }
