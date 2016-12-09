@@ -30,7 +30,7 @@ public class Yard {
     private HashMap<Integer, Slot> itemIDList = new HashMap<Integer, Slot>();
     private List<Slot> slotList;
     private Slot inputSlot, outputSlot;
-    private boolean debug = false;
+    private boolean debug = true;
     private boolean debugL = false;
     private boolean debugM = false;
     private List<Gantry> gantries;
@@ -714,7 +714,7 @@ public class Yard {
         } else {
             for (int j = 0; j < slotList.size(); j++) {
                 Slot temp = slotList.get(j);
-                if (temp.getItem() == null && (temp.getCenterX() != s.getCenterX())) {
+                if (temp.getItem() == null && (temp.getCenterX() != s.getCenterX()) && temp.getType().equals("STORAGE")) {
                     temp.setItem(s.getItem());
                     succes = true;
                     j = slotList.size() + 10;
