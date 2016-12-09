@@ -217,6 +217,7 @@ public class Yard {
                         gantries.get(i).getStartX() + "", gantries.get(i).getStartY() + "", "null"));
                 writer.flush();
             }
+//            writeMove(outputSlot,gantries.get(1),null);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -262,6 +263,8 @@ public class Yard {
     public boolean addItem(Item i) {
         boolean found = false;
 
+        writeMove(outputSlot,gantries.get(1),null);
+
         // Beweeg naar ingang
         writeMove(inputSlot, gantries.get(0), null);
         writePickUp(inputSlot, gantries.get(0), i.getId());
@@ -303,10 +306,12 @@ public class Yard {
                 succes = true;
                 // itemIDList.remove(core.getItem().getId());
 
-                writeMove(core, gantries.get(0), null);
-                writePickUp(core, gantries.get(0), i.getId());
-                writeMove(outputSlot, gantries.get(0), i.getId());
-                writePlacement(outputSlot, gantries.get(0));
+                writeMove(inputSlot, gantries.get(0),null);
+
+                writeMove(core, gantries.get(1), null);
+                writePickUp(core, gantries.get(1), i.getId());
+                writeMove(outputSlot, gantries.get(1), i.getId());
+                writePlacement(outputSlot, gantries.get(1));
 
                 core.setItem(null); // --> zogezegd naar eindslot gemoved en
                 // verwijdert uit yard
@@ -673,8 +678,8 @@ public class Yard {
             System.out.println("DEBUG - Moving from slot (" + s.getId() + "): item (" + s.getItem().getId() + ")");
         boolean succes = false;
 
-        writeMove(s, gantries.get(0), null);
-        writePickUp(s, gantries.get(0), s.getItem().getId());
+        writeMove(s, gantries.get(1), null);
+        writePickUp(s, gantries.get(1), s.getItem().getId());
 
         if (staggered) {
             for (int j = 0; j < slotList.size(); j++) {
@@ -699,8 +704,8 @@ public class Yard {
                         if (debug || debugL)
                             System.out.println("DEBUG - We found a suiteable slot (staggered)! " + temp.toString());
 
-                        writeMove(temp, gantries.get(0), s.getItem().getId());
-                        writePlacement(temp, gantries.get(0));
+                        writeMove(temp, gantries.get(1), s.getItem().getId());
+                        writePlacement(temp, gantries.get(1));
                     } else if (debugM) {
                         System.out.println("###################################################################");
                     }
@@ -717,8 +722,8 @@ public class Yard {
                     if (debug || debugL)
                         System.out.println("DEBUG - We found a suiteable slot (non staggered)! " + temp.toString());
 
-                    writeMove(temp, gantries.get(0), s.getItem().getId());
-                    writePlacement(temp, gantries.get(0));
+                    writeMove(temp, gantries.get(1), s.getItem().getId());
+                    writePlacement(temp, gantries.get(1));
                 }
             }
         }
@@ -731,6 +736,7 @@ public class Yard {
         boolean succes = false;
         if (mode.equals("INPUT")) {
             System.out.println("TASKHANDLER - adding " + j.getItem().toString());
+            //Move kraan naar ouput
             succes = addItem(j.getItem());
 
             if (!succes) {
@@ -739,6 +745,7 @@ public class Yard {
                 System.out.println("We succeeded in handling (IN) item " + j.getItem().toString());
         } else if (mode.equals("OUTPUT")) {
             System.out.println("TASKHANDLER - removing " + j.getItem().toString());
+            //Move kraan naar input
             succes = digItem(j.getItem());
 
             if (!succes) {
@@ -750,8 +757,8 @@ public class Yard {
             System.out.println("Moving item " + j.getItem().getId() + " from input to output :)");
             writeMove(inputSlot, gantries.get(0), null);
             writePickUp(inputSlot, gantries.get(0), j.getItem().getId());
-            writeMove(outputSlot, gantries.get(0), j.getItem().getId());
-            writePlacement(outputSlot, gantries.get(0));
+            writeMove(outputSlot, gantries.get(1), j.getItem().getId());
+            writePlacement(outputSlot, gantries.get(1));
             succes = true;
         }
 
@@ -836,10 +843,5 @@ public class Yard {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public boolean executeJobMeerdere(Job job, String output) {
-
-        return true;
     }
 }
