@@ -21,7 +21,8 @@ public class Controller extends Observable {
     private int limit, inLimit, outLimit, klok, klokIN, klokOUT;
 
     private Yard yard;
-  
+
+    private boolean debug = false;
 
     private Stage stage;
 
@@ -51,8 +52,7 @@ public class Controller extends Observable {
             System.out.println("OUT: " + huidigProbleem.getOutputJobSequence().get(klokOUT).getItem().getId());
 
 
-  
-        if (huidigProbleem.getOutputJobSequence().size() < klokOUT && huidigProbleem.getInputJobSequence().size() < klokIN)
+        if (huidigProbleem.getOutputJobSequence().size() > klokOUT && huidigProbleem.getInputJobSequence().size() > klokIN)
             if (huidigProbleem.getOutputJobSequence().get(klokOUT).getItem().getId() == huidigProbleem.getInputJobSequence().get(klokIN).getItem().getId()) {
                 if (yard.executeJob(huidigProbleem.getInputJobSequence().get(klokIN), "DIRECT")) {
                     klokIN++;

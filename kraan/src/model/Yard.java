@@ -30,9 +30,9 @@ public class Yard {
     private HashMap<Integer, Slot> itemIDList = new HashMap<Integer, Slot>();
     private List<Slot> slotList;
     private Slot inputSlot, outputSlot;
-    private boolean debug = true;
-    private boolean debugL = true;
-    private boolean debugM = true;
+    private boolean debug = false;
+    private boolean debugL = false;
+    private boolean debugM = false;
     private List<Gantry> gantries;
     private FileWriter writer;
 
@@ -752,10 +752,11 @@ public class Yard {
                 System.out.println("We succeeded in handling (OUT) item " + j.getItem().toString());
         } else if (mode.equals("DIRECT")) {
 
+            System.out.println("Moving item " + j.getItem().getId() + " from input to output :)");
             writeMove(inputSlot, gantry, null);
-            writePickUp(inputSlot,gantry,j.getItem().getId());
-            writeMove(outputSlot,gantry,j.getItem().getId());
-            writePlacement(outputSlot,gantry);
+            writePickUp(inputSlot, gantry, j.getItem().getId());
+            writeMove(outputSlot, gantry, j.getItem().getId());
+            writePlacement(outputSlot, gantry);
             //Hier moet kraan sysoke doen van:
             // Move to INPUT
             // pickup
