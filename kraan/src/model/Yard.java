@@ -23,7 +23,6 @@ public class Yard {
     private int width, length, height;
     public static int[] csvparam1 = new int[5];
     public int clock;
-    public Gantry gantry;
     public int pickUpPlaceDuration;
 
     private Slot[][] yard;
@@ -198,13 +197,10 @@ public class Yard {
         try {
             clock = 0;
             pickUpPlaceDuration = probleem.getPickupPlaceDuration();
-            gantry = gantries.get(0);
-
 
             FileChooser fileChooser = new FileChooser();
             try {
                 fileChooser.setInitialDirectory(
-                        //                new File(".")
                         new File(Main.class.getClassLoader().getResource(".").toURI())
                 );
             } catch (URISyntaxException e) {
@@ -213,7 +209,6 @@ public class Yard {
             fileChooser.setTitle("Open CSV File");
             File hulp = fileChooser.showOpenDialog(stage);
 
-//			File hulp = new File(Main.class.getClassLoader().getResource("KRAANOPDRACHT2_Groep3.csv").toURI());
             writer = new FileWriter(hulp);
             CSVUtils.writeLine(writer, Arrays.asList("gID", "T", "x", "y", "itemInCraneID"));
             writer.flush();
@@ -268,8 +263,8 @@ public class Yard {
         boolean found = false;
 
         // Beweeg naar ingang
-        writeMove(inputSlot, gantry, null);
-        writePickUp(inputSlot, gantry, i.getId());
+        writeMove(inputSlot, gantries.get(0), null);
+        writePickUp(inputSlot, gantries.get(0), i.getId());
 
         for (int j = 0; j < slotList.size(); j++) {
             Slot temp = slotList.get(j);
@@ -282,8 +277,8 @@ public class Yard {
                             + temp.toString());
                 found = true;
 
-                writeMove(temp, gantry, temp.getItem().getId());
-                writePlacement(temp, gantry);
+                writeMove(temp, gantries.get(0), temp.getItem().getId());
+                writePlacement(temp, gantries.get(0));
 
                 j = slotList.size() + 10;
             }
@@ -308,10 +303,10 @@ public class Yard {
                 succes = true;
                 // itemIDList.remove(core.getItem().getId());
 
-                writeMove(core, gantry, null);
-                writePickUp(core, gantry, i.getId());
-                writeMove(outputSlot, gantry, i.getId());
-                writePlacement(outputSlot, gantry);
+                writeMove(core, gantries.get(0), null);
+                writePickUp(core, gantries.get(0), i.getId());
+                writeMove(outputSlot, gantries.get(0), i.getId());
+                writePlacement(outputSlot, gantries.get(0));
 
                 core.setItem(null); // --> zogezegd naar eindslot gemoved en
                 // verwijdert uit yard
@@ -678,8 +673,8 @@ public class Yard {
             System.out.println("DEBUG - Moving from slot (" + s.getId() + "): item (" + s.getItem().getId() + ")");
         boolean succes = false;
 
-        writeMove(s, gantry, null);
-        writePickUp(s, gantry, s.getItem().getId());
+        writeMove(s, gantries.get(0), null);
+        writePickUp(s, gantries.get(0), s.getItem().getId());
 
         if (staggered) {
             for (int j = 0; j < slotList.size(); j++) {
@@ -704,8 +699,8 @@ public class Yard {
                         if (debug || debugL)
                             System.out.println("DEBUG - We found a suiteable slot (staggered)! " + temp.toString());
 
-                        writeMove(temp, gantry, s.getItem().getId());
-                        writePlacement(temp, gantry);
+                        writeMove(temp, gantries.get(0), s.getItem().getId());
+                        writePlacement(temp, gantries.get(0));
                     } else if (debugM) {
                         System.out.println("###################################################################");
                     }
@@ -722,8 +717,8 @@ public class Yard {
                     if (debug || debugL)
                         System.out.println("DEBUG - We found a suiteable slot (non staggered)! " + temp.toString());
 
-                    writeMove(temp, gantry, s.getItem().getId());
-                    writePlacement(temp, gantry);
+                    writeMove(temp, gantries.get(0), s.getItem().getId());
+                    writePlacement(temp, gantries.get(0));
                 }
             }
         }
@@ -753,15 +748,10 @@ public class Yard {
         } else if (mode.equals("DIRECT")) {
 
             System.out.println("Moving item " + j.getItem().getId() + " from input to output :)");
-            writeMove(inputSlot, gantry, null);
-            writePickUp(inputSlot, gantry, j.getItem().getId());
-            writeMove(outputSlot, gantry, j.getItem().getId());
-            writePlacement(outputSlot, gantry);
-            //Hier moet kraan sysoke doen van:
-            // Move to INPUT
-            // pickup
-            // Move to OUTPUT
-            // drop
+            writeMove(inputSlot, gantries.get(0), null);
+            writePickUp(inputSlot, gantries.get(0), j.getItem().getId());
+            writeMove(outputSlot, gantries.get(0), j.getItem().getId());
+            writePlacement(outputSlot, gantries.get(0));
             succes = true;
         }
 

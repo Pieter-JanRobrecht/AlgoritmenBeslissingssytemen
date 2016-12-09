@@ -82,26 +82,6 @@ public class Controller extends Observable {
         }
     }
 
-    public void setFileSmall() {
-        File file = null;
-
-        try {
-            file = new File(Main.class.getClassLoader().getResource("testInput.json").toURI());
-        } catch (URISyntaxException e) {
-            System.out.println("Problem with loading file: testInput.json");
-            System.out.println("Using a different method to load the file");
-            file = new File("./data/testInput.json");
-        }
-
-        try {
-            huidigProbleem = Problem.fromJson(file);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            System.out.println("Problem with parsing the file: testInput.json");
-        }
-    }
-
     public Problem getHuidigProbleem() {
         return huidigProbleem;
     }
