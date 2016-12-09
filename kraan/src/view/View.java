@@ -55,11 +55,15 @@ public class View implements Observer {
 
     @FXML
     void doStep(ActionEvent event) {
+        int klokIn = controller.getKlokIN();
+        int klokOut = controller.getKlokOUT();
+        int limitIn = controller.getInLimit();
+        int limitOut = controller.getOutLimit();
         String fieldString = stepField.getText();
         try {
             int aantalStappen = Integer.parseInt(fieldString);
 
-            if (aantalStappen + controller.getKlok() > controller.getLimit())
+            if (klokIn + aantalStappen > limitIn || klokOut + aantalStappen > limitOut)
                 throw new Exception();
 
             for (int i = 0; i < aantalStappen - 1 && controller.getKlok() < controller.getLimit(); i++) {
@@ -233,8 +237,8 @@ public class View implements Observer {
         FileChooser fileChooser = new FileChooser();
         try {
             fileChooser.setInitialDirectory(
-    //                new File(".")
-            new File(Main.class.getClassLoader().getResource(".").toURI())
+                    //                new File(".")
+                    new File(Main.class.getClassLoader().getResource(".").toURI())
             );
         } catch (URISyntaxException e) {
             e.printStackTrace();
@@ -242,7 +246,7 @@ public class View implements Observer {
         fileChooser.setTitle("Kies File");
         File file = fileChooser.showOpenDialog((Stage) dropDown.getScene().getWindow());
 
-        if(file != null){
+        if (file != null) {
             try {
                 controller.setHuidigProbleem(Problem.fromJson(file));
             } catch (IOException | ParseException e) {
@@ -250,7 +254,7 @@ public class View implements Observer {
             }
             resetField();
             initField();
-        }else {
+        } else {
             Notifications.create()
                     .title("ERROR")
                     .text("Gelieve een bestand te kiezen")
