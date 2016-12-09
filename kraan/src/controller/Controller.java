@@ -21,17 +21,21 @@ public class Controller extends Observable {
     private int limit, inLimit, outLimit, klok, klokIN, klokOUT;
 
     private Yard yard;
-    private boolean debug = false;
-	private Stage stage;
 
-	public Controller(Stage primaryStage) throws IOException {
-		stage = primaryStage;
+    private boolean debug = false;
+
+    private Stage stage;
+
+
+    public Controller(Stage primaryStage) throws IOException {
+        stage = primaryStage;
     }
 
-	public void reset() {
-		yard = new Yard(huidigProbleem, stage);
-		// y.printOutYard();
-		// y.printHash();
+
+    public void reset() {
+        yard = new Yard(huidigProbleem, stage);
+        // y.printOutYard();
+        // y.printHash();
 
         inLimit = huidigProbleem.getInputJobSequence().size();
         outLimit = huidigProbleem.getOutputJobSequence().size();
@@ -48,23 +52,25 @@ public class Controller extends Observable {
             System.out.println("OUT: " + huidigProbleem.getOutputJobSequence().get(klokOUT).getItem().getId());
 
 
-        if (huidigProbleem.getOutputJobSequence().get(klokOUT).getItem().getId() == huidigProbleem.getInputJobSequence().get(klokIN).getItem().getId()) {
-            if (yard.executeJob(huidigProbleem.getInputJobSequence().get(klokIN), "DIRECT")) {
-                klokIN++;
+        if (huidigProbleem.getOutputJobSequence().size() > klokOUT && huidigProbleem.getInputJobSequence().size() > klokIN)
+            if (huidigProbleem.getOutputJobSequence().get(klokOUT).getItem().getId() == huidigProbleem.getInputJobSequence().get(klokIN).getItem().getId()) {
+                if (yard.executeJob(huidigProbleem.getInputJobSequence().get(klokIN), "DIRECT")) {
+                    klokIN++;
+                    klokOUT++;
+                }
+            }
+
+
+        if (klokOUT < outLimit) {
+            if (yard.executeJob(huidigProbleem.getOutputJobSequence().get(klokOUT), "OUTPUT")) {
                 klokOUT++;
             }
+            // yard.printOutYard();
         }
 
         if (klokIN < inLimit) {
             if (yard.executeJob(huidigProbleem.getInputJobSequence().get(klokIN), "INPUT")) {
                 klokIN++;
-            }
-            // yard.printOutYard();
-        }
-
-        if (klokOUT < outLimit) {
-            if (yard.executeJob(huidigProbleem.getOutputJobSequence().get(klokOUT), "OUTPUT")) {
-                klokOUT++;
             }
             // yard.printOutYard();
         }
@@ -143,4 +149,5 @@ public class Controller extends Observable {
 	public void setHuidigProbleem(Problem huidigProbleem) {
 		this.huidigProbleem = huidigProbleem;
 	}
+   
 }

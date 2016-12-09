@@ -48,6 +48,7 @@ public class Yard {
             Slot s = probleem.getSlots().get(i);
             if (s.getZ() != 0 && s.getCenterX() % 10 == 0) {
                 // staggered is true
+                System.out.println("Staggered detected!");
                 staggered = true;
                 i = probleem.getSlots().size();
                 // jump out for :D
@@ -155,6 +156,9 @@ public class Yard {
                     if (s.getItem() != null)
                         itemIDList.put(s.getItem().getId(), s);
                 } else { // not staggered
+                    if (debugL)
+                        System.out.println("NS | " + (yCoords * length + xCoords) + " | " + s.toString());
+
                     yard[yCoords * length + xCoords][s.getZ()] = s;
                     if (s.getItem() != null)
                         itemIDList.put(s.getItem().getId(), s);
@@ -748,15 +752,17 @@ public class Yard {
                 System.out.println("We succeeded in handling (OUT) item " + j.getItem().toString());
         } else if (mode.equals("DIRECT")) {
 
+            System.out.println("Moving item " + j.getItem().getId() + " from input to output :)");
             writeMove(inputSlot, gantry, null);
-            writePickUp(inputSlot,gantry,j.getItem().getId());
-            writeMove(outputSlot,gantry,j.getItem().getId());
-            writePlacement(outputSlot,gantry);
+            writePickUp(inputSlot, gantry, j.getItem().getId());
+            writeMove(outputSlot, gantry, j.getItem().getId());
+            writePlacement(outputSlot, gantry);
             //Hier moet kraan sysoke doen van:
             // Move to INPUT
             // pickup
             // Move to OUTPUT
             // drop
+            succes = true;
         }
 
         return succes;
