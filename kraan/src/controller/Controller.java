@@ -46,36 +46,38 @@ public class Controller extends Observable {
     }
 
     public void doStep(boolean notify) throws IOException {
-        if (debug && klokIN < huidigProbleem.getInputJobSequence().size())
-            System.out.println("IN: " + huidigProbleem.getInputJobSequence().get(klokIN).getItem().getId());
-        if (debug && klokOUT < huidigProbleem.getOutputJobSequence().size())
-            System.out.println("OUT: " + huidigProbleem.getOutputJobSequence().get(klokOUT).getItem().getId());
 
-
-        if (huidigProbleem.getOutputJobSequence().size() > klokOUT && huidigProbleem.getInputJobSequence().size() > klokIN)
-            if (huidigProbleem.getOutputJobSequence().get(klokOUT).getItem().getId() == huidigProbleem.getInputJobSequence().get(klokIN).getItem().getId()) {
-                if (yard.executeJob(huidigProbleem.getInputJobSequence().get(klokIN), "DIRECT")) {
-                    klokIN++;
-                    klokOUT++;
-                }
-            }
-
-
+//        if (debug && klokIN < huidigProbleem.getInputJobSequence().size())
+//            System.out.println("IN: " + huidigProbleem.getInputJobSequence().get(klokIN).getItem().getId());
+//        if (debug && klokOUT < huidigProbleem.getOutputJobSequence().size())
+//            System.out.println("OUT: " + huidigProbleem.getOutputJobSequence().get(klokOUT).getItem().getId());
+//
+//
+//        if (huidigProbleem.getOutputJobSequence().size() > klokOUT && huidigProbleem.getInputJobSequence().size() > klokIN)
+//            if (huidigProbleem.getOutputJobSequence().get(klokOUT).getItem().getId() == huidigProbleem.getInputJobSequence().get(klokIN).getItem().getId()) {
+//                if (yard.executeJob(huidigProbleem.getInputJobSequence().get(klokIN), "DIRECT")) {
+//                    klokIN++;
+//                    klokOUT++;
+//                }
+//            }
+//
+//
         if (klokOUT < outLimit) {
+            if(yard.executeJobMeerdere(huidigProbleem.getOutputJobSequence().get(klokOUT),"OUTPUT"))
             if (yard.executeJob(huidigProbleem.getOutputJobSequence().get(klokOUT), "OUTPUT")) {
                 klokOUT++;
             }
             // yard.printOutYard();
         }
-
-        if (klokIN < inLimit) {
-            if (yard.executeJob(huidigProbleem.getInputJobSequence().get(klokIN), "INPUT")) {
-                klokIN++;
-            }
-            // yard.printOutYard();
-        }
-
-        klok = Math.min(klokIN, klokOUT);
+//
+//        if (klokIN < inLimit) {
+//            if (yard.executeJob(huidigProbleem.getInputJobSequence().get(klokIN), "INPUT")) {
+//                klokIN++;
+//            }
+//            // yard.printOutYard();
+//        }
+//
+//        klok = Math.min(klokIN, klokOUT);
         if (notify) {
             setChanged();
             notifyObservers();
@@ -129,5 +131,5 @@ public class Controller extends Observable {
 	public void setHuidigProbleem(Problem huidigProbleem) {
 		this.huidigProbleem = huidigProbleem;
 	}
-   
+
 }

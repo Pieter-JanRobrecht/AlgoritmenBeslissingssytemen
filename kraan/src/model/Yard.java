@@ -838,4 +838,8 @@ public class Yard {
         }
     }
 
+    public boolean executeJobMeerdere(Job job, String output) {
+
+        return true;
+    }
 }
