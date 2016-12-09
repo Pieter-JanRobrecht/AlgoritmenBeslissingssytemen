@@ -30,9 +30,9 @@ public class Yard {
     private HashMap<Integer, Slot> itemIDList = new HashMap<Integer, Slot>();
     private List<Slot> slotList;
     private Slot inputSlot, outputSlot;
-    private boolean debug = false;
-    private boolean debugL = false;
-    private boolean debugM = false;
+    private boolean debug = true;
+    private boolean debugL = true;
+    private boolean debugM = true;
     private List<Gantry> gantries;
     private FileWriter writer;
 
@@ -48,6 +48,7 @@ public class Yard {
             Slot s = probleem.getSlots().get(i);
             if (s.getZ() != 0 && s.getCenterX() % 10 == 0) {
                 // staggered is true
+                System.out.println("Staggered detected!");
                 staggered = true;
                 i = probleem.getSlots().size();
                 // jump out for :D
@@ -155,6 +156,9 @@ public class Yard {
                     if (s.getItem() != null)
                         itemIDList.put(s.getItem().getId(), s);
                 } else { // not staggered
+                    if (debugL)
+                        System.out.println("NS | " + (yCoords * length + xCoords) + " | " + s.toString());
+
                     yard[yCoords * length + xCoords][s.getZ()] = s;
                     if (s.getItem() != null)
                         itemIDList.put(s.getItem().getId(), s);
@@ -757,6 +761,7 @@ public class Yard {
             // pickup
             // Move to OUTPUT
             // drop
+            succes = true;
         }
 
         return succes;
