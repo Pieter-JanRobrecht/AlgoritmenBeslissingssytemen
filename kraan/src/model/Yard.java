@@ -282,6 +282,7 @@ public class Yard {
 
                 writeMove(temp, gantries.get(0), temp.getItem().getId());
                 writePlacement(temp, gantries.get(0));
+                writeMove(inputSlot, gantries.get(0),null);
 
                 j = slotList.size() + 10;
             }
