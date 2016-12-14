@@ -309,6 +309,7 @@ public class Yard {
 
                 writeMove(inputSlot, gantries.get(0),null);
 
+                writeMove(outputSlot,gantries.get(1),null);
                 writeMove(core, gantries.get(1), null);
                 writePickUp(core, gantries.get(1), i.getId());
                 writeMove(outputSlot, gantries.get(1), i.getId());
