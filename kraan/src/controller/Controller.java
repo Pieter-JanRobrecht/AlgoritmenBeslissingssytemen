@@ -63,7 +63,7 @@ public class Controller extends Observable {
 
 
         if (klokOUT < outLimit) {
-            if (yard.executeJob(huidigProbleem.getOutputJobSequence().get(klokOUT), "OUTPUT"))
+            // if (yard.executeJob(huidigProbleem.getOutputJobSequence().get(klokOUT), "OUTPUT"))
                 if (yard.executeJob(huidigProbleem.getOutputJobSequence().get(klokOUT), "OUTPUT")) {
                     klokOUT++;
                 }
