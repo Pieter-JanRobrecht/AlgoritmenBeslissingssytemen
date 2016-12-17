@@ -263,10 +263,10 @@ public class Yard {
     public boolean addItem(Item i) {
         boolean found = false;
 
-        writeMove(outputSlot,gantries.get(1),null);
-
+       double timeOffset= writeMove(outputSlot,gantries.get(1),null,0);
+       if (debug) System.out.println("while Gantry 1 returns to outputslot, we saved:"+timeOffset);
         // Beweeg naar ingang
-        writeMove(inputSlot, gantries.get(0), null);
+        writeMove(inputSlot, gantries.get(0), null,timeOffset);
         writePickUp(inputSlot, gantries.get(0), i.getId());
 
         for (int j = 0; j < slotList.size(); j++) {
@@ -280,9 +280,9 @@ public class Yard {
                             + temp.toString());
                 found = true;
 
-                writeMove(temp, gantries.get(0), temp.getItem().getId());
+                writeMove(temp, gantries.get(0), temp.getItem().getId(),0);
                 writePlacement(temp, gantries.get(0));
-                writeMove(inputSlot, gantries.get(0),null);
+                writeMove(inputSlot, gantries.get(0),null,0);
 
                 j = slotList.size() + 10;
             }
@@ -307,12 +307,12 @@ public class Yard {
                 succes = true;
                 // itemIDList.remove(core.getItem().getId());
 
-                writeMove(inputSlot, gantries.get(0),null);
-
-                writeMove(outputSlot,gantries.get(1),null);
-                writeMove(core, gantries.get(1), null);
+               double timeOffset= writeMove(inputSlot, gantries.get(0),null,0);
+               if (debug) System.out.println("while Gantry 0 returns to inputslot, we save:"+ timeOffset);
+                writeMove(outputSlot,gantries.get(1),null, timeOffset);
+                writeMove(core, gantries.get(1), null,0);
                 writePickUp(core, gantries.get(1), i.getId());
-                writeMove(outputSlot, gantries.get(1), i.getId());
+                writeMove(outputSlot, gantries.get(1), i.getId(),0);
                 writePlacement(outputSlot, gantries.get(1));
 
                 core.setItem(null); // --> zogezegd naar eindslot gemoved en
@@ -680,7 +680,7 @@ public class Yard {
             System.out.println("DEBUG - Moving from slot (" + s.getId() + "): item (" + s.getItem().getId() + ")");
         boolean succes = false;
 
-        writeMove(s, gantries.get(1), null);
+        writeMove(s, gantries.get(1), null,0);
         writePickUp(s, gantries.get(1), s.getItem().getId());
 
         if (staggered) {
@@ -706,7 +706,7 @@ public class Yard {
                         if (debug || debugL)
                             System.out.println("DEBUG - We found a suiteable slot (staggered)! " + temp.toString());
 
-                        writeMove(temp, gantries.get(1), s.getItem().getId());
+                        writeMove(temp, gantries.get(1), s.getItem().getId(),0);
                         writePlacement(temp, gantries.get(1));
                     } else if (debugM) {
                         System.out.println("###################################################################");
@@ -724,7 +724,7 @@ public class Yard {
                     if (debug || debugL)
                         System.out.println("DEBUG - We found a suiteable slot (non staggered)! " + temp.toString());
 
-                    writeMove(temp, gantries.get(1), s.getItem().getId());
+                    writeMove(temp, gantries.get(1), s.getItem().getId(),0);
                     writePlacement(temp, gantries.get(1));
                 }
             }
@@ -757,9 +757,9 @@ public class Yard {
         } else if (mode.equals("DIRECT")) {
 
             System.out.println("Moving item " + j.getItem().getId() + " from input to output :)");
-            writeMove(inputSlot, gantries.get(0), null);
+           double timeOffset= writeMove(inputSlot, gantries.get(0), null,0);
             writePickUp(inputSlot, gantries.get(0), j.getItem().getId());
-            writeMove(outputSlot, gantries.get(1), j.getItem().getId());
+            writeMove(outputSlot, gantries.get(1), j.getItem().getId(),timeOffset);
             writePlacement(outputSlot, gantries.get(1));
             succes = true;
         }
@@ -815,11 +815,11 @@ public class Yard {
         }
     }
 
-    private void writeMove(Slot temp, Gantry gantry, Integer itemId) {
+    private double writeMove(Slot temp, Gantry gantry, Integer itemId, double offset) {
         double bewegingstijd = Math.max(Math.abs(temp.getCenterX() - gantry.getStartX()) / (gantry.getXSpeed()),
                 Math.abs(temp.getCenterY() - gantry.getStartY()) / (gantry.getYSpeed()));
 
-        clock += bewegingstijd;
+        clock += bewegingstijd-offset;
         gantry.setStartX(temp.getCenterX());
         gantry.setStartY(temp.getCenterY());
 
@@ -845,5 +845,6 @@ public class Yard {
         } catch (IOException e) {
             e.printStackTrace();
         }
+		return bewegingstijd;
     }
 }
