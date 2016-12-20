@@ -221,8 +221,7 @@ public class Yard {
 						gantries.get(i).getStartX() + "", gantries.get(i).getStartY() + "", "null"));
 				writer.flush();
 			}
-			// offset2= writeMove(outputSlot,gantries.get(1),null,0,true);
-			// writeMove(inputSlot,gantries.get(0),null,0,false);
+	
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -271,9 +270,9 @@ public class Yard {
 		
 		if (debug) System.out.println("offset2 voor controle:"+ offset2);
 		if (clock<clockmin0) offset2=clock-clockmin0;
-		else if (clock-offset2<clockmin0 ) offset2=(clock-offset2)-clockmin0;//offset1-(clockmin1-clock);
+		else if (clock-offset2<clockmin0 ) offset2=(clock-offset2)-clockmin0;
 		if (debug) System.out.println("while Gantry 1 returns to outputslot, we saved:"+offset2 +" ( klok:"+clock+", klokmin0:"+clockmin0+", klokmin1:"+clockmin1);
-		writeMove(inputSlot, gantries.get(0), null,offset2,false,true); 
+		writeMove(inputSlot, gantries.get(0), null,offset2,false); 
 		offset2=0;
 		writePickUp(inputSlot, gantries.get(0), i.getId()); 
 
@@ -288,10 +287,16 @@ public class Yard {
 							+ temp.toString());
 				found = true;
 
-				writeMove(temp, gantries.get(0), temp.getItem().getId(),0,false,true);
+				writeMove(temp, gantries.get(0), temp.getItem().getId(),0,false);
 				writePlacement(temp, gantries.get(0),false);
-				offset1= writeMove(inputSlot, gantries.get(0),null,0,true,true);
-
+				offset1= writeMove(inputSlot, gantries.get(0),null,0,true);
+				if (debug) System.out.println("offset1 voor controle:"+ offset1);
+				if (clock<clockmin1 ) offset1=clock-clockmin1; 
+				else if (clock-offset1<clockmin1 ) offset1=(clock-offset1)-clockmin1;
+				writeMove(outputSlot,gantries.get(1),null, offset1-pickUpPlaceDuration,false); 
+				
+				offset1=0;
+				
 				j = slotList.size() + 10;
 			}
 		}
@@ -313,20 +318,10 @@ public class Yard {
 			if (maakVrij(core)) {
 				// mogen nu vrij bewegen!
 				succes = true;
-			
-
-				if (debug) System.out.println("offset1 voor controle:"+ offset1);
-				if (clock<clockmin1 ) offset1=clock-clockmin1; 
-				else if (clock-offset1<clockmin1 ) offset1=(clock-offset1)-clockmin1;//offset1-(clockmin1-clock);
-				if (debug) System.out.println("while Gantry 0 returns to inputslot, we saved:"+offset1 +" ( klok:"+clock+", klokmin0:"+clockmin0+", klokmin1:"+clockmin1);
-				writeMove(outputSlot,gantries.get(1),null, offset1,false,true); // is er al?
-				offset1=0;
-				writeMove(core, gantries.get(1), null,0,false,true);
-
+				writeMove(core, gantries.get(1), null,0,false);
 				writePickUp(core, gantries.get(1), i.getId());
-				offset2= writeMove(outputSlot, gantries.get(1), i.getId(),0,true,true);
+				offset2= writeMove(outputSlot, gantries.get(1), i.getId(),0,true);
 				writePlacement(outputSlot, gantries.get(1),false);
-
 				core.setItem(null); // --> zogezegd naar eindslot gemoved en
 				// verwijdert uit yard
 			}
@@ -692,7 +687,7 @@ public class Yard {
 			System.out.println("DEBUG - Moving from slot (" + s.getId() + "): item (" + s.getItem().getId() + ")");
 		boolean succes = false;
 
-		writeMove(s, gantries.get(1), null,0,false,false);
+		writeMove(s, gantries.get(1), null,0,false);
 		writePickUp(s, gantries.get(1), s.getItem().getId());
 
 		if (staggered) {
@@ -718,7 +713,7 @@ public class Yard {
 						if (debug || debugL)
 							System.out.println("DEBUG - We found a suiteable slot (staggered)! " + temp.toString());
 
-						writeMove(temp, gantries.get(1), s.getItem().getId(),0,false,false);
+						writeMove(temp, gantries.get(1), s.getItem().getId(),0,false);
 						writePlacement(temp, gantries.get(1),true);
 					} else if (debugM) {
 						System.out.println("###################################################################");
@@ -736,7 +731,7 @@ public class Yard {
 					if (debug || debugL)
 						System.out.println("DEBUG - We found a suiteable slot (non staggered)! " + temp.toString());
 
-					writeMove(temp, gantries.get(1), s.getItem().getId(),0,false,false);
+					writeMove(temp, gantries.get(1), s.getItem().getId(),0,false);
 					writePlacement(temp, gantries.get(1),true);
 				}
 			}
@@ -769,9 +764,9 @@ public class Yard {
 		} else if (mode.equals("DIRECT")) {
 
 			System.out.println("Moving item " + j.getItem().getId() + " from input to output :)");
-			double timeOffset= writeMove(inputSlot, gantries.get(0), null,0,true,true);
+			writeMove(inputSlot, gantries.get(0), null,0,true);
 			writePickUp(inputSlot, gantries.get(0), j.getItem().getId());
-			writeMove(outputSlot, gantries.get(1), j.getItem().getId(),0,false,true);
+			writeMove(outputSlot, gantries.get(1), j.getItem().getId(),0,false);
 			writePlacement(outputSlot, gantries.get(1),false);
 			succes = true;
 		}
@@ -830,20 +825,22 @@ public class Yard {
 		}
 	}
 
-	private double writeMove(Slot temp, Gantry gantry, Integer itemId, double offset, boolean bool, boolean notInMove) {
+	private double writeMove(Slot temp, Gantry gantry, Integer itemId, double offset, boolean bool) {
 		double bewegingstijd = Math.max(Math.abs(temp.getCenterX() - gantry.getStartX()) / (gantry.getXSpeed()),
 				Math.abs(temp.getCenterY() - gantry.getStartY()) / (gantry.getYSpeed()));
 
 
-		if (notInMove)clock += bewegingstijd - offset;
-		else clock += bewegingstijd+offset;
-		if (bool) { if (gantry.getId()==0) clockmin0=clock; else if (gantry.getId()==1) clockmin1=(clock+pickUpPlaceDuration);  } //gantryselected=gantry.getId(); }
-		// if (clock< clockmin  && gantry.getId()!=gantryselected && gantryselected!=5)
-		// 	clock=clockmin;
+		clock += bewegingstijd - offset;
+		
+		if (bool) { if (gantry.getId()==0) clockmin0=clock; else if (gantry.getId()==1) clockmin1=(clock);  } 
+		
 		gantry.setStartX(temp.getCenterX());
 		gantry.setStartY(temp.getCenterY());
-
+		int clocktemp=0;
+		if (gantry.getId()==0) clocktemp=clockmin0; else if (gantry.getId()==1) clocktemp=clockmin1;
 		System.out.println("klokmin0:"+clockmin0+ " en klokmin1:"+clockmin1+" en klok:"+clock);
+		
+		if (clock<clocktemp) clock=clocktemp;
 		// csv
 		csvparam1[0] = gantry.getId();
 		csvparam1[1] = temp.getCenterX();
@@ -852,7 +849,7 @@ public class Yard {
 			csvparam1[3] = itemId;
 		}
 		csvparam1[4] = clock;
-		// if(offset==0) clockmin=clock;
+		
 		try {
 			if (itemId != null) {
 				CSVUtils.writeLine(writer, Arrays.asList("" + Yard.csvparam1[0], "" + Yard.csvparam1[4],
