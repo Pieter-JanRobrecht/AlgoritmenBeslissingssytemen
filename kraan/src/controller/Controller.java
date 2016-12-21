@@ -22,7 +22,7 @@ public class Controller extends Observable {
 
     private Yard yard;
 
-    private boolean debug = false;
+    private boolean debug = true;
 
     private Stage stage;
 

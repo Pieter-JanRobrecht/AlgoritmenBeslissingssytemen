@@ -264,7 +264,8 @@ public class Yard {
 		}
 	}
 
-	public boolean addItem(Item i) {
+	public boolean addItem(Item i, List<Gantry> gant) {
+		if (gant.size()>1) {
 		boolean found = false;
 
 		
@@ -300,10 +301,38 @@ public class Yard {
 				j = slotList.size() + 10;
 			}
 		}
-		return found;
+		return found;}
+		else {
+			boolean found = false;
+
+	        // Beweeg naar ingang
+	        writeMove(inputSlot, gantries.get(0), null,0,false);
+	        writePickUp(inputSlot, gantries.get(0), i.getId());
+
+	        for (int j = 0; j < slotList.size(); j++) {
+	            Slot temp = slotList.get(j);
+	            if (temp.getItem() == null) {
+	                temp.setItem(i);
+	                itemIDList.put(i.getId(), temp);
+
+	                if (debug)
+	                    System.out.println("DEBUG - We found a suiteable slot! Placing item " + i.toString() + " in "
+	                            + temp.toString());
+	                found = true;
+
+	                writeMove(temp, gantries.get(0), temp.getItem().getId(),0,false);
+	                writePlacement(temp, gantries.get(0),false);
+
+	                j = slotList.size() + 10;
+	            }
+	        }
+	        return found;
+			
+		}
 	}
 
-	public boolean digItem(Item i) {
+	public boolean digItem(Item i, List<Gantry> gant) {
+		if (gant.size()>1){
 		boolean succes = false;
 
 		if (debug)
@@ -323,10 +352,41 @@ public class Yard {
 				offset2= writeMove(outputSlot, gantries.get(1), i.getId(),0,true);
 				writePlacement(outputSlot, gantries.get(1),false);
 				core.setItem(null); // --> zogezegd naar eindslot gemoved en
-				// verwijdert uit yard
+				// verwijderd uit yard
 			}
 		}
-		return succes;
+		return succes;}
+		
+		else {
+			
+			 boolean succes = false;
+
+		        if (debug)
+		            System.out.println("DEBUG - Item info: " + i.toString());
+		        Slot core = itemIDList.get(i.getId());
+		        if (core == null) {
+		            if (debug)
+		                System.out.println("ERRORDEBUG - " + i.toString());
+		        } else {
+		            if (debug)
+		                System.out.println("DEBUG - Slot info where item is stored: " + core.toString());
+		            if (maakVrij(core)) {
+		                // mogen nu vrij bewegen!
+		                succes = true;
+		                // itemIDList.remove(core.getItem().getId());
+
+		                writeMove(core, gantries.get(0), null,0,false);
+		                writePickUp(core, gantries.get(0), i.getId());
+		                writeMove(outputSlot, gantries.get(0), i.getId(),0,false);
+		                writePlacement(outputSlot, gantries.get(0),false);
+
+		                core.setItem(null); // --> zogezegd naar eindslot gemoved en
+		                // verwijdert uit yard
+		            }
+		        }
+		        return succes;
+			
+		}
 	}
 
 	public boolean maakVrij(Slot s) {
@@ -687,8 +747,13 @@ public class Yard {
 			System.out.println("DEBUG - Moving from slot (" + s.getId() + "): item (" + s.getItem().getId() + ")");
 		boolean succes = false;
 
+		if (gantries.size()>1) {	
 		writeMove(s, gantries.get(1), null,0,false);
-		writePickUp(s, gantries.get(1), s.getItem().getId());
+		writePickUp(s, gantries.get(1), s.getItem().getId()); }
+		else {
+			writeMove(s, gantries.get(0), null,0,false);
+			writePickUp(s, gantries.get(0), s.getItem().getId());
+		}
 
 		if (staggered) {
 			for (int j = 0; j < slotList.size(); j++) {
@@ -712,9 +777,14 @@ public class Yard {
 						itemIDList.put(temp.getItem().getId(), temp);
 						if (debug || debugL)
 							System.out.println("DEBUG - We found a suiteable slot (staggered)! " + temp.toString());
-
+						if (gantries.size()>1) {	
 						writeMove(temp, gantries.get(1), s.getItem().getId(),0,false);
-						writePlacement(temp, gantries.get(1),true);
+						writePlacement(temp, gantries.get(1),true);}
+						else {
+							writeMove(temp, gantries.get(0), s.getItem().getId(),0,false);
+							writePlacement(temp, gantries.get(0),true);
+						}
+
 					} else if (debugM) {
 						System.out.println("###################################################################");
 					}
@@ -730,9 +800,14 @@ public class Yard {
 					itemIDList.put(temp.getItem().getId(), temp);
 					if (debug || debugL)
 						System.out.println("DEBUG - We found a suiteable slot (non staggered)! " + temp.toString());
-
+					if (gantries.size()>1) {	
 					writeMove(temp, gantries.get(1), s.getItem().getId(),0,false);
 					writePlacement(temp, gantries.get(1),true);
+					}
+					else {
+						writeMove(temp, gantries.get(0), s.getItem().getId(),0,false);
+						writePlacement(temp, gantries.get(0),true);
+					}
 				}
 			}
 		}
@@ -746,7 +821,7 @@ public class Yard {
 		if (mode.equals("INPUT")) {
 			System.out.println("TASKHANDLER - adding " + j.getItem().toString());
 			//Move kraan naar ouput
-			succes = addItem(j.getItem());
+			succes = addItem(j.getItem(),gantries);
 
 			if (!succes) {
 				System.out.println("We failed to handle item " + j.getItem().toString() + " (IN) for now");
@@ -755,7 +830,7 @@ public class Yard {
 		} else if (mode.equals("OUTPUT")) {
 			System.out.println("TASKHANDLER - removing " + j.getItem().toString());
 			//Move kraan naar input
-			succes = digItem(j.getItem());
+			succes = digItem(j.getItem(),gantries);
 
 			if (!succes) {
 				System.out.println("We failed to handle item " + j.getItem().toString() + " (OUT) for now");
@@ -766,8 +841,14 @@ public class Yard {
 			System.out.println("Moving item " + j.getItem().getId() + " from input to output :)");
 			writeMove(inputSlot, gantries.get(0), null,0,true);
 			writePickUp(inputSlot, gantries.get(0), j.getItem().getId());
+			
+			if(gantries.size()>1){
 			writeMove(outputSlot, gantries.get(1), j.getItem().getId(),0,false);
-			writePlacement(outputSlot, gantries.get(1),false);
+			writePlacement(outputSlot, gantries.get(1),false);}
+			else {
+				writeMove(outputSlot, gantries.get(0), j.getItem().getId(),0,false);
+				writePlacement(outputSlot, gantries.get(0),false);
+			}
 			succes = true;
 		}
 
